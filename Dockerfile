@@ -1,20 +1,24 @@
 # Gunakan imej asas PHP dengan Apache
 FROM php:8.2-apache
 
-# Pasang sambungan (extensions) yang diperlukan untuk MySQL dan aplikasi anda
+# Pasang extensions yang diperlukan untuk MySQL
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
-# Aktifkan mod_rewrite Apache (diperlukan untuk .htaccess)
+# Fix MPM conflict - disable mpm_event, keep mpm_prefork
+RUN a2dismod mpm_event || true
+RUN a2enmod mpm_prefork || true
+
+# Aktifkan mod_rewrite untuk .htaccess
 RUN a2enmod rewrite
 
 # Tetapkan direktori kerja
 WORKDIR /var/www/html
 
-# Salin semua fail projek anda ke dalam kontena
+# Salin semua fail projek
 COPY . .
 
-# Tetapkan kebenaran yang betul untuk folder
+# Set kebenaran untuk folder
 RUN chown -R www-data:www-data /var/www/html
 
-# Dedahkan port 80 (port lalai Apache)
+# Expose port 80
 EXPOSE 80
