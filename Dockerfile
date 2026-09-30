@@ -1,16 +1,13 @@
-FROM php:8.2-apache
+# Tukar base image untuk paksa Railway rebuild (bukan guna cache lama)
+FROM webdevops/php-apache:8.2
 
-RUN a2dismod mpm_event || true
-RUN a2dismod mpm_worker || true
-RUN a2dismod mpm_itk || true
-RUN a2enmod mpm_prefork
+# Copy fail projek
+COPY . /app
 
-RUN docker-php-ext-install pdo pdo_mysql mysqli
-RUN a2enmod rewrite
+# Set working directory
+WORKDIR /app
 
-WORKDIR /var/www/html
-COPY . .
-RUN chown -R www-data:www-data /var/www/html
+# Set kebenaran
+RUN chown -R application:application /app
 
 EXPOSE 80
-CMD ["apache2-foreground"]
