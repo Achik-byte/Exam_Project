@@ -1,0 +1,8 @@
+FROM webdevops/php-apache:8.2
+
+COPY . /app
+WORKDIR /app
+
+RUN chown -R application:application /app
+
+EXPOSE 80
