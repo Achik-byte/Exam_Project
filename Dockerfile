@@ -1,24 +1,25 @@
-# Gunakan imej asas PHP dengan Apache
 FROM php:8.2-apache
 
-# Pasang extensions yang diperlukan untuk MySQL
+# Fix MPM conflict - cara paksa (delete semua MPM, then set prefork)
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.* \
+          /etc/apache2/mods-enabled/mpm_worker.* \
+          /etc/apache2/mods-enabled/mpm_itk.* && \
+    ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load && \
+    ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf
+
+# Pasang PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
-# Fix MPM conflict - disable mpm_event, keep mpm_prefork
-RUN a2dismod mpm_event || true
-RUN a2enmod mpm_prefork || true
-
-# Aktifkan mod_rewrite untuk .htaccess
+# Enable rewrite untuk .htaccess
 RUN a2enmod rewrite
 
-# Tetapkan direktori kerja
+# Set working directory
 WORKDIR /var/www/html
 
-# Salin semua fail projek
+# Copy fail projek
 COPY . .
 
-# Set kebenaran untuk folder
+# Set kebenaran
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose port 80
 EXPOSE 80
