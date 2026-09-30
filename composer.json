@@ -1,0 +1,15 @@
+{
+    "name": "exam-api/project",
+    "description": "RESTful API for Exam Scheduling & Result Management",
+    "require": {
+        "firebase/php-jwt": "^7.0"
+    },
+    "autoload": {
+        "classmap": [
+            "Config/",
+            "Controllers/",
+            "Helpers/",
+            "Middleware/"
+        ]
+    }
+}
