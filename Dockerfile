@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Fix MPM conflict - cara paksa (delete semua MPM, then set prefork)
+# Fix MPM conflict
 RUN rm -f /etc/apache2/mods-enabled/mpm_event.* \
           /etc/apache2/mods-enabled/mpm_worker.* \
           /etc/apache2/mods-enabled/mpm_itk.* && \
@@ -13,6 +13,10 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli
 # Enable rewrite untuk .htaccess
 RUN a2enmod rewrite
 
+# Tukar Apache listen port - guna PORT env variable atau default 80
+RUN sed -i 's/Listen 80/Listen ${PORT}/g' /etc/apache2/ports.conf && \
+    sed -i 's/:80/:${PORT}/g' /etc/apache2/sites-available/000-default.conf
+
 # Set working directory
 WORKDIR /var/www/html
 
@@ -22,4 +26,5 @@ COPY . .
 # Set kebenaran
 RUN chown -R www-data:www-data /var/www/html
 
-EXPOSE 80
+# Start Apache
+CMD ["apache2-foreground"]
