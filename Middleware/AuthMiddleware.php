@@ -22,27 +22,40 @@ class AuthMiddleware {
         return JWT::encode($payload, self::$secretKey, 'HS256');
     }
 
-    // Sahkan Token dari Header Authorization
     public static function verifyToken() {
+    // Cuba pelbagai cara untuk ambil Authorization header
+    $authHeader = null;
+
+    // Cara 1: $_SERVER (paling reliable dalam Docker)
+    if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+    }
+    // Cara 2: REDIRECT_HTTP_AUTHORIZATION (selepas rewrite)
+    elseif (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+        $authHeader = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+    }
+    // Cara 3: getallheaders() (fallback)
+    else {
         $headers = getallheaders();
         $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? null;
-
-        if (!$authHeader) {
-            Response::error('Authorization token missing', 401);
-        }
-
-        $parts = explode(' ', $authHeader);
-        if (count($parts) !== 2 || $parts[0] !== 'Bearer') {
-            Response::error('Invalid token format. Use: Bearer <token>', 401);
-        }
-
-        try {
-            $decoded = JWT::decode($parts[1], new Key(self::$secretKey, 'HS256'));
-            return (array) $decoded;
-        } catch (\Exception $e) {
-            Response::error('Invalid or expired token: ' . $e->getMessage(), 401);
-        }
     }
+
+    if (!$authHeader) {
+        Response::error('Authorization token missing', 401);
+    }
+
+    $parts = explode(' ', $authHeader);
+    if (count($parts) !== 2 || $parts[0] !== 'Bearer') {
+        Response::error('Invalid token format. Use: Bearer <token>', 401);
+    }
+
+    try {
+        $decoded = JWT::decode($parts[1], new Key(self::$secretKey, 'HS256'));
+        return (array) $decoded;
+    } catch (\Exception $e) {
+        Response::error('Invalid or expired token: ' . $e->getMessage(), 401);
+    }
+}
 
     // Semak Peranan (Role-Based Access Control)
     public static function requireRole($allowedRoles) {
