@@ -20,8 +20,16 @@ $exams    = ($response['status_code'] === 200) ? ($response['body']['data'] ?? [
 <?php include 'navbar.php'; ?>
 <div class="container mt-4">
   <h3>Examinations</h3>
+  <p class="text-muted">
+    <?php
+      if ($role === 'admin')        echo "All exams. You can create, edit or delete.";
+      elseif ($role === 'lecturer') echo "All exams (view only).";
+      else                          echo "Exams for subjects you are taking.";
+    ?>
+  </p>
 
-  <?php if ($role === 'admin' || $role === 'lecturer'): ?>
+  <!-- ⭐ HANYA ADMIN nampak butang ni -->
+  <?php if ($role === 'admin'): ?>
     <a href="exam_add.php" class="btn btn-primary mb-3">Add New Exam</a>
   <?php endif; ?>
 
@@ -37,7 +45,7 @@ $exams    = ($response['status_code'] === 200) ? ($response['body']['data'] ?? [
           <th>Time</th>
           <th>Venue</th>
           <th>Status</th>
-          <?php if ($role === 'admin' || $role === 'lecturer'): ?><th>Action</th><?php endif; ?>
+          <?php if ($role === 'admin'): ?><th>Action</th><?php endif; ?>
         </tr>
       </thead>
       <tbody>
@@ -49,7 +57,7 @@ $exams    = ($response['status_code'] === 200) ? ($response['body']['data'] ?? [
           <td><?= htmlspecialchars($e['start_time'] . ' - ' . $e['end_time']) ?></td>
           <td><?= htmlspecialchars($e['venue']) ?></td>
           <td><span class="badge bg-info"><?= htmlspecialchars($e['status']) ?></span></td>
-          <?php if ($role === 'admin' || $role === 'lecturer'): ?>
+          <?php if ($role === 'admin'): ?>
             <td>
               <a href="exam_edit.php?id=<?= $e['exam_id'] ?>" class="btn btn-sm btn-warning">Edit</a>
               <a href="exam_delete.php?id=<?= $e['exam_id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this exam?')">Delete</a>
