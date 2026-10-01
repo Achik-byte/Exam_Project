@@ -1,6 +1,6 @@
 <?php
 define('API_BASE_URL', getenv('API_BASE_URL') ?: 'https://examproject-production-e573.up.railway.app');
-define('PUBLIC_BASE_URL', getenv('PUBLIC_BASE_URL') ?: 'http://localhost');
+define('PUBLIC_BASE_URL', getenv('PUBLIC_BASE_URL') ?: 'https://examproject-production-e573.up.railway.app/web');
 
 function apiRequest($endpoint, $method = 'GET', $data = null, $token = null) {
     $url = API_BASE_URL . $endpoint;

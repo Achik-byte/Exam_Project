@@ -1,10 +1,13 @@
 RewriteEngine On
 
-# PENTING: Pass Authorization header ke PHP-FPM
+# PENTING: Exclude /web/ folder dari API rewrite
+RewriteCond %{REQUEST_URI} ^/web/
+RewriteRule .* - [L]
+
+# Pass Authorization header ke PHP-FPM
 RewriteCond %{HTTP:Authorization} .
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-# Pass Authorization header via SetEnvIf juga
 SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 
 # CORS Preflight
@@ -15,5 +18,5 @@ RewriteRule ^(.*)$ $1 [R=200,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Semua request pergi ke index.php
+# Semua request pergi ke index.php (API)
 RewriteRule ^(.*)$ index.php [QSA,L]

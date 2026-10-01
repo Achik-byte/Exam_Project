@@ -15,7 +15,7 @@ $verifyUrl = "";
 
 if (isset($_GET['generate_qr'])) {
     // URL untuk pengawas exam buka (public)
-  $verifyUrl = PUBLIC_BASE_URL . "/verify.php?id=" . $_SESSION['user_id'];
+   $verifyUrl = PUBLIC_BASE_URL . "/verify.php?id=" . $_SESSION['user_id'];
     
     // Hantar URL ni sebagai data untuk QR code
     $qrResponse = apiRequest('/generate-qr?data=' . urlencode($verifyUrl), 'GET', null, $_SESSION['token']);
