@@ -13,44 +13,16 @@ $current = basename($_SERVER['PHP_SELF'], '.php');
     </button>
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link <?= $current === 'index' ? 'active' : '' ?>" href="index.php">
-            <i class="bi bi-house-door"></i> Dashboard
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <?= $current === 'courses' ? 'active' : '' ?>" href="courses.php">
-            <i class="bi bi-book"></i> Courses
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <?= $current === 'exams' ? 'active' : '' ?>" href="exams.php">
-            <i class="bi bi-calendar-event"></i> Exams
-          </a>
-        </li>
+        <li class="nav-item"><a class="nav-link <?= $current === 'index' ? 'active' : '' ?>" href="index.php"><i class="bi bi-house-door"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link <?= $current === 'courses' ? 'active' : '' ?>" href="courses.php"><i class="bi bi-book"></i> Courses</a></li>
+        <li class="nav-item"><a class="nav-link <?= $current === 'exams' ? 'active' : '' ?>" href="exams.php"><i class="bi bi-calendar-event"></i> Exams</a></li>
         <?php if ($role === 'student'): ?>
-          <li class="nav-item">
-            <a class="nav-link <?= $current === 'my_subjects' ? 'active' : '' ?>" href="my_subjects.php">
-              <i class="bi bi-journal-text"></i> My Subjects
-            </a>
-          </li>
+          <li class="nav-item"><a class="nav-link <?= $current === 'my_subjects' ? 'active' : '' ?>" href="my_subjects.php"><i class="bi bi-journal-text"></i> My Subjects</a></li>
         <?php endif; ?>
-        <li class="nav-item">
-          <a class="nav-link <?= $current === 'results' ? 'active' : '' ?>" href="results.php">
-            <i class="bi bi-bar-chart"></i> Results
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <?= $current === 'notifications' ? 'active' : '' ?>" href="notifications.php">
-            <i class="bi bi-bell"></i> Notifications
-          </a>
-        </li>
+        <li class="nav-item"><a class="nav-link <?= $current === 'results' ? 'active' : '' ?>" href="results.php"><i class="bi bi-bar-chart"></i> Results</a></li>
+        <li class="nav-item"><a class="nav-link <?= $current === 'notifications' ? 'active' : '' ?>" href="notifications.php"><i class="bi bi-bell"></i> Notifications</a></li>
         <?php if ($role === 'admin'): ?>
-          <li class="nav-item">
-            <a class="nav-link <?= $current === 'users' ? 'active' : '' ?>" href="users.php">
-              <i class="bi bi-people"></i> Users
-            </a>
-          </li>
+          <li class="nav-item"><a class="nav-link <?= $current === 'users' ? 'active' : '' ?>" href="users.php"><i class="bi bi-people"></i> Users</a></li>
         <?php endif; ?>
       </ul>
     </div>

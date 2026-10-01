@@ -37,51 +37,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body>
 <div class="login-page">
-  <!-- LEFT SIDE -->
   <div class="login-left">
     <div class="login-left-content">
       <h1>ExamSys</h1>
       <p>Secure examination scheduling & result management system for universities and colleges.</p>
-      
       <div class="login-features">
         <div class="login-feature">
           <div class="icon"><i class="bi bi-shield-check"></i></div>
-          <div>
-            <strong>JWT Authentication</strong><br>
-            <span style="opacity:0.8;font-size:0.85rem;">Secure token-based login</span>
-          </div>
+          <div><strong>JWT Authentication</strong><br><span style="opacity:0.8;font-size:0.85rem;">Secure token-based login</span></div>
         </div>
         <div class="login-feature">
           <div class="icon"><i class="bi bi-people"></i></div>
-          <div>
-            <strong>Role-Based Access</strong><br>
-            <span style="opacity:0.8;font-size:0.85rem;">Admin, Lecturer, Student</span>
-          </div>
+          <div><strong>Role-Based Access</strong><br><span style="opacity:0.8;font-size:0.85rem;">Admin, Lecturer, Student</span></div>
         </div>
         <div class="login-feature">
           <div class="icon"><i class="bi bi-qr-code"></i></div>
-          <div>
-            <strong>QR Code Verification</strong><br>
-            <span style="opacity:0.8;font-size:0.85rem;">Third-party API integration</span>
-          </div>
+          <div><strong>QR Code Verification</strong><br><span style="opacity:0.8;font-size:0.85rem;">Third-party API integration</span></div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- RIGHT SIDE -->
   <div class="login-right">
     <div class="login-form-container">
       <h2>Welcome Back</h2>
       <p class="subtitle">Sign in to your account to continue</p>
-
       <?php if ($error): ?>
         <div class="alert-modern danger">
           <i class="bi bi-exclamation-triangle-fill"></i>
           <div><?= htmlspecialchars($error) ?></div>
         </div>
       <?php endif; ?>
-
       <form method="POST" action="login.php">
         <div class="form-group">
           <label class="form-label-modern">Email Address</label>
@@ -95,7 +80,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           <i class="bi bi-box-arrow-in-right"></i> Sign In
         </button>
       </form>
-
       <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:0.85rem;color:var(--gray);">
         <strong style="color:var(--dark-2);">Demo Accounts:</strong><br>
         Admin: admin@uni.edu / 900101010101<br>
