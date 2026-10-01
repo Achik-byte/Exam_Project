@@ -863,3 +863,253 @@ code, .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
 ::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }
 
 ::selection { background: var(--indigo); color: white; }
+
+/* =====================================================================
+   FORM ENHANCEMENTS — Section groupings, role picker, grade picker
+   ===================================================================== */
+
+/* ---- Form Section ---- */
+.form-section {
+  padding-bottom: 1.75rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--line);
+}
+.form-section:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0.5rem;
+}
+.form-section-head {
+  display: flex; align-items: flex-start; gap: 0.9rem;
+  margin-bottom: 1.35rem;
+}
+.form-section-icon {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+.form-section-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 0.15rem;
+  line-height: 1.2;
+}
+.form-section-desc {
+  color: var(--ink-3);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ---- Required indicator ---- */
+.req { color: var(--coral); font-weight: 700; margin-left: 0.15rem; }
+
+/* ---- Hint text ---- */
+.hint {
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.hint i { color: var(--sky); }
+
+/* ---- Form Actions ---- */
+.form-actions {
+  display: flex; gap: 0.75rem; justify-content: flex-end;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  margin-top: 1.5rem;
+}
+@media (max-width: 640px) {
+  .form-actions { flex-direction: column-reverse; }
+  .form-actions .btn-lum { width: 100%; justify-content: center; }
+}
+
+/* ---- Info Banner ---- */
+.info-banner {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  background: linear-gradient(135deg, var(--indigo-soft) 0%, var(--paper) 100%);
+  border: 1px solid #d9dcfb;
+  border-radius: var(--r-lg);
+  margin-bottom: 1.5rem;
+}
+.info-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- Student Card (result_edit, user_edit) ---- */
+.student-card {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
+.student-avatar {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: var(--indigo-soft);
+  color: var(--indigo);
+  flex-shrink: 0;
+}
+
+/* ---- Role Picker ---- */
+.role-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+@media (max-width: 640px) {
+  .role-picker { grid-template-columns: 1fr; }
+}
+.role-card {
+  display: flex; flex-direction: column; align-items: flex-start;
+  padding: 1.15rem 1.1rem;
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all .22s ease;
+  position: relative;
+}
+.role-card:hover {
+  border-color: var(--indigo);
+  background: var(--paper-2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.role-card.selected {
+  border-color: var(--indigo);
+  background: linear-gradient(180deg, var(--indigo-soft) 0%, var(--paper) 100%);
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.12), var(--shadow-md);
+}
+.role-card.selected::before {
+  content: '✓';
+  position: absolute; top: 0.65rem; right: 0.75rem;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--indigo);
+  color: white;
+  font-size: 0.7rem;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(67, 56, 202, 0.35);
+}
+.role-icon {
+  width: 40px; height: 40px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  margin-bottom: 0.7rem;
+}
+.role-name {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 0.95rem;
+  margin-bottom: 0.15rem;
+}
+.role-desc {
+  color: var(--ink-3);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* ---- Grade Picker ---- */
+.grade-picker {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+@media (max-width: 720px) { .grade-picker { grid-template-columns: repeat(5, 1fr); } }
+@media (max-width: 400px) { .grade-picker { grid-template-columns: repeat(3, 1fr); } }
+.grade-chip {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0.85rem 0.5rem;
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink-2);
+  transition: all .2s ease;
+}
+.grade-chip:hover {
+  border-color: var(--indigo);
+  color: var(--indigo);
+  transform: translateY(-2px);
+}
+.grade-chip.selected {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ---- Toggle Switch ---- */
+.toggle-lum {
+  display: flex; align-items: center; gap: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+.toggle-lum input { display: none; }
+.toggle-track {
+  width: 48px; height: 28px;
+  border-radius: 999px;
+  background: var(--line-2);
+  position: relative;
+  transition: background .25s;
+  flex-shrink: 0;
+}
+.toggle-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transition: transform .25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toggle-lum input:checked ~ .toggle-track {
+  background: var(--mint);
+}
+.toggle-lum input:checked ~ .toggle-track .toggle-thumb {
+  transform: translateX(20px);
+}
+
+/* ---- Subject Picker ---- */
+.subject-picker {
+  padding: 0.9rem;
+  background: var(--paper-2);
+  border: 1.5px dashed var(--line-2);
+  border-radius: var(--r-md);
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.subject-picker .check-lum { margin-bottom: 0; }
+
+/* ---- Responsive tweaks ---- */
+@media (max-width: 640px) {
+  .form-section-title { font-size: 1.15rem; }
+  .student-card { flex-wrap: wrap; }
+}

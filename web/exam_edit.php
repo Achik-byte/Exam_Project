@@ -14,7 +14,6 @@ if (!$exam) { die("Exam not found."); }
 
 $subjectRes = apiRequest('/subjects?course_id=' . $exam['course_id'], 'GET', null, $_SESSION['token']);
 $subjects   = $subjectRes['body']['data'] ?? [];
-
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -26,31 +25,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         'venue'      => $_POST['venue'],
         'status'     => $_POST['status']
     ], $_SESSION['token']);
-
-    if ($response['status_code'] === 200) {
-        header("Location: exams.php"); exit;
-    } else {
-        $error = $response['body']['message'] ?? 'Failed to update';
-    }
+    if ($response['status_code'] === 200) { header("Location: exams.php"); exit; }
+    else $error = $response['body']['message'] ?? 'Failed to update';
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Edit Exam - ExamSys</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Exam · ExamFlow</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-lum" style="max-width:820px;">
+<div class="container-lum" style="max-width:880px;">
+
+  <div style="display:flex;align-items:center;gap:0.5rem;color:var(--ink-3);font-size:0.85rem;margin-bottom:1.25rem;">
+    <a href="exams.php" style="color:var(--ink-3);text-decoration:none;"><i class="bi bi-calendar-event"></i> Exams</a>
+    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+    <span style="color:var(--ink);font-weight:600;">Edit #<?= htmlspecialchars($exam['exam_id']) ?></span>
+  </div>
+
   <div class="page-head-lum">
     <div>
-      <span class="eyebrow">◆ New Entry</span>
-      <h1>Add <em>exam</em></h1>
-      <p class="sub">Schedule a new examination session.</p>
+      <span class="eyebrow">◆ Edit Entry</span>
+      <h1>Edit <em>exam</em></h1>
+      <p class="sub">Update the details of this examination.</p>
     </div>
     <a href="exams.php" class="btn-lum ghost"><i class="bi bi-arrow-left"></i> Back</a>
   </div>
@@ -59,69 +62,107 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div class="alert-lum danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
   <?php endif; ?>
 
+  <!-- INFO BANNER -->
+  <div class="info-banner">
+    <div class="info-icon" style="background:var(--indigo);">
+      <i class="bi bi-collection-fill"></i>
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);font-weight:700;margin-bottom:0.2rem;">Course (locked)</div>
+      <div style="font-weight:700;color:var(--ink);font-size:1rem;"><?= htmlspecialchars($exam['course_code']) ?></div>
+      <div style="color:var(--ink-3);font-size:0.88rem;"><?= htmlspecialchars($exam['course_title']) ?></div>
+    </div>
+  </div>
+
   <div class="card-lum flat">
     <form method="POST">
-      <div class="grid-2">
+
+      <div class="form-section">
+        <div class="form-section-head">
+          <div class="form-section-icon" style="background:var(--indigo-soft);color:var(--indigo);">
+            <i class="bi bi-bookmark-fill"></i>
+          </div>
+          <div>
+            <h3 class="form-section-title">Subject</h3>
+            <p class="form-section-desc">Choose the subject for this exam.</p>
+          </div>
+        </div>
         <div class="field-lum">
-          <label><i class="bi bi-collection-fill"></i> Course</label>
-          <select name="course_id" id="courseSelect" class="select-lum" required>
-            <option value="">— Select Course —</option>
-            <?php foreach ($courses as $c): ?>
-              <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_code'].' - '.$c['course_title']) ?></option>
+          <label><i class="bi bi-bookmark-fill"></i> Subject <span class="req">*</span></label>
+          <select name="subject_id" class="select-lum" required>
+            <?php foreach ($subjects as $s): ?>
+              <option value="<?= $s['subject_id'] ?>" <?= $exam['subject_id']==$s['subject_id']?'selected':'' ?>>
+                <?= htmlspecialchars($s['subject_name']) ?>
+              </option>
             <?php endforeach; ?>
           </select>
         </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head">
+          <div class="form-section-icon" style="background:var(--amber-soft);color:#92400e;">
+            <i class="bi bi-clock-fill"></i>
+          </div>
+          <div>
+            <h3 class="form-section-title">Date & Time</h3>
+            <p class="form-section-desc">When will this exam take place?</p>
+          </div>
+        </div>
+
         <div class="field-lum">
-          <label><i class="bi bi-bookmark-fill"></i> Subject</label>
-          <select name="subject_id" id="subjectSelect" class="select-lum" required>
-            <option value="">— Select Course First —</option>
-          </select>
+          <label><i class="bi bi-calendar-event-fill"></i> Exam Date <span class="req">*</span></label>
+          <input type="date" name="exam_date" class="input-lum" value="<?= htmlspecialchars($exam['exam_date']) ?>" required>
+        </div>
+
+        <div class="grid-2">
+          <div class="field-lum">
+            <label><i class="bi bi-play-circle-fill"></i> Start Time <span class="req">*</span></label>
+            <input type="time" name="start_time" class="input-lum" value="<?= htmlspecialchars($exam['start_time']) ?>" required>
+          </div>
+          <div class="field-lum">
+            <label><i class="bi bi-stop-circle-fill"></i> End Time <span class="req">*</span></label>
+            <input type="time" name="end_time" class="input-lum" value="<?= htmlspecialchars($exam['end_time']) ?>" required>
+          </div>
         </div>
       </div>
-      <div class="field-lum">
-        <label><i class="bi bi-calendar-event-fill"></i> Date</label>
-        <input type="date" name="exam_date" class="input-lum" required>
-      </div>
-      <div class="grid-2">
-        <div class="field-lum">
-          <label><i class="bi bi-clock-fill"></i> Start Time</label>
-          <input type="time" name="start_time" class="input-lum" required>
+
+      <div class="form-section">
+        <div class="form-section-head">
+          <div class="form-section-icon" style="background:var(--mint-soft);color:#047857;">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <div>
+            <h3 class="form-section-title">Location & Status</h3>
+            <p class="form-section-desc">Where and current state.</p>
+          </div>
         </div>
-        <div class="field-lum">
-          <label><i class="bi bi-clock-history"></i> End Time</label>
-          <input type="time" name="end_time" class="input-lum" required>
+
+        <div class="grid-2">
+          <div class="field-lum">
+            <label><i class="bi bi-geo-alt-fill"></i> Venue <span class="req">*</span></label>
+            <input type="text" name="venue" class="input-lum" value="<?= htmlspecialchars($exam['venue']) ?>" required>
+          </div>
+          <div class="field-lum">
+            <label><i class="bi bi-flag-fill"></i> Status <span class="req">*</span></label>
+            <select name="status" class="select-lum" required>
+              <?php foreach (['scheduled'=>'🕒 Scheduled','completed'=>'✓ Completed','cancelled'=>'✕ Cancelled'] as $s => $lbl): ?>
+                <option value="<?= $s ?>" <?= $exam['status']==$s?'selected':'' ?>><?= $lbl ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
         </div>
       </div>
-      <div class="field-lum">
-        <label><i class="bi bi-geo-alt-fill"></i> Venue</label>
-        <input type="text" name="venue" class="input-lum" placeholder="e.g. Exam Hall A" required>
+
+      <div class="form-actions">
+        <a href="exams.php" class="btn-lum ghost"><i class="bi bi-x-lg"></i> Cancel</a>
+        <button type="submit" class="btn-lum primary"><i class="bi bi-check-circle-fill"></i> Update Exam</button>
       </div>
-      <div class="field-lum">
-        <label><i class="bi bi-flag-fill"></i> Status</label>
-        <select name="status" class="select-lum" required>
-          <option value="scheduled">Scheduled</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
-      </div>
-      <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-        <button type="submit" class="btn-lum primary"><i class="bi bi-check-circle-fill"></i> Save Exam</button>
-        <a href="exams.php" class="btn-lum ghost">Cancel</a>
-      </div>
+
     </form>
   </div>
+
 </div>
-<script>
-const allSubjects = <?= json_encode($subjects) ?>;
-document.getElementById('courseSelect').addEventListener('change', function () {
-    const courseId = this.value;
-    const subjectSelect = document.getElementById('subjectSelect');
-    subjectSelect.innerHTML = '<option value="">— Select Subject —</option>';
-    if (!courseId) { subjectSelect.innerHTML = '<option value="">— Select Course First —</option>'; return; }
-    allSubjects.filter(s => String(s.course_id) === String(courseId))
-        .forEach(s => { const o=document.createElement('option'); o.value=s.subject_id; o.textContent=s.subject_name; subjectSelect.appendChild(o); });
-});
-</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -10,10 +10,7 @@ if (!$id) { header("Location: results.php"); exit; }
 
 $res    = apiRequest('/results/' . $id, 'GET', null, $_SESSION['token']);
 $result = $res['body']['data'] ?? null;
-
-if (!$result) {
-    die("Result not found or access denied.");
-}
+if (!$result) { die("Result not found or access denied."); }
 
 $error = "";
 
@@ -22,97 +19,108 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         'marks' => $_POST['marks'],
         'grade' => $_POST['grade']
     ], $_SESSION['token']);
-
-    if ($response['status_code'] === 200) {
-        header("Location: results.php"); exit;
-    } else {
-        $error = $response['body']['message'] ?? 'Failed to update';
-    }
+    if ($response['status_code'] === 200) { header("Location: results.php"); exit; }
+    else $error = $response['body']['message'] ?? 'Failed to update';
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Edit Result</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Result · ExamFlow</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-lum" style="max-width:820px;">
+<div class="container-lum" style="max-width:760px;">
+
+  <div style="display:flex;align-items:center;gap:0.5rem;color:var(--ink-3);font-size:0.85rem;margin-bottom:1.25rem;">
+    <a href="results.php" style="color:var(--ink-3);text-decoration:none;"><i class="bi bi-bar-chart-fill"></i> Results</a>
+    <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
+    <span style="color:var(--ink);font-weight:600;">Update Grade</span>
+  </div>
+
   <div class="page-head-lum">
     <div>
-      <span class="eyebrow">◆ New Entry</span>
-      <h1>Add <em>exam</em></h1>
-      <p class="sub">Schedule a new examination session.</p>
+      <span class="eyebrow">◆ Grade Update</span>
+      <h1>Update <em>result</em></h1>
+      <p class="sub">Adjust the marks and grade for this student.</p>
     </div>
-    <a href="exams.php" class="btn-lum ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    <a href="results.php" class="btn-lum ghost"><i class="bi bi-arrow-left"></i> Back</a>
   </div>
 
   <?php if ($error): ?>
     <div class="alert-lum danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
   <?php endif; ?>
 
+  <!-- STUDENT INFO CARD -->
+  <div class="student-card">
+    <div class="student-avatar"><?= strtoupper(substr($result['full_name'],0,1)) ?></div>
+    <div style="flex:1;">
+      <div style="font-weight:700;color:var(--ink);font-size:1.05rem;"><?= htmlspecialchars($result['full_name']) ?></div>
+      <div style="color:var(--ink-3);font-size:0.85rem;margin-top:0.15rem;">
+        <i class="bi bi-collection-fill"></i> <?= htmlspecialchars($result['course_code']) ?> · <?= htmlspecialchars($result['course_title']) ?>
+      </div>
+    </div>
+    <span class="pill indigo" style="padding:0.5rem 0.9rem;font-size:0.8rem;">
+      <i class="bi bi-hash"></i> ID <?= htmlspecialchars($result['result_id']) ?>
+    </span>
+  </div>
+
   <div class="card-lum flat">
     <form method="POST">
-      <div class="grid-2">
+
+      <div class="form-section">
+        <div class="form-section-head">
+          <div class="form-section-icon" style="background:var(--violet-soft);color:#7e22ce;">
+            <i class="bi bi-award-fill"></i>
+          </div>
+          <div>
+            <h3 class="form-section-title">Grading</h3>
+            <p class="form-section-desc">Enter the student's marks and assign a grade.</p>
+          </div>
+        </div>
+
         <div class="field-lum">
-          <label><i class="bi bi-collection-fill"></i> Course</label>
-          <select name="course_id" id="courseSelect" class="select-lum" required>
-            <option value="">— Select Course —</option>
-            <?php foreach ($courses as $c): ?>
-              <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_code'].' - '.$c['course_title']) ?></option>
+          <label><i class="bi bi-123"></i> Marks (0–100) <span class="req">*</span></label>
+          <input type="number" step="0.01" min="0" max="100" name="marks" class="input-lum" value="<?= htmlspecialchars($result['marks']) ?>" required style="font-size:1.15rem;font-weight:700;">
+          <div class="hint"><i class="bi bi-info-circle"></i> Marks akan affect grade point automatically.</div>
+        </div>
+
+        <div class="field-lum">
+          <label><i class="bi bi-trophy-fill"></i> Grade <span class="req">*</span></label>
+          <div class="grade-picker">
+            <?php foreach (['A','A-','B+','B','B-','C+','C','D','F'] as $g):
+              $sel = $result['grade'] == $g;
+            ?>
+              <label class="grade-chip <?= $sel ? 'selected' : '' ?>">
+                <input type="radio" name="grade" value="<?= $g ?>" <?= $sel ? 'checked' : '' ?> required style="display:none;">
+                <span><?= $g ?></span>
+              </label>
             <?php endforeach; ?>
-          </select>
-        </div>
-        <div class="field-lum">
-          <label><i class="bi bi-bookmark-fill"></i> Subject</label>
-          <select name="subject_id" id="subjectSelect" class="select-lum" required>
-            <option value="">— Select Course First —</option>
-          </select>
+          </div>
         </div>
       </div>
-      <div class="field-lum">
-        <label><i class="bi bi-calendar-event-fill"></i> Date</label>
-        <input type="date" name="exam_date" class="input-lum" required>
+
+      <div class="form-actions">
+        <a href="results.php" class="btn-lum ghost"><i class="bi bi-x-lg"></i> Cancel</a>
+        <button type="submit" class="btn-lum primary"><i class="bi bi-check-circle-fill"></i> Update Result</button>
       </div>
-      <div class="grid-2">
-        <div class="field-lum">
-          <label><i class="bi bi-clock-fill"></i> Start Time</label>
-          <input type="time" name="start_time" class="input-lum" required>
-        </div>
-        <div class="field-lum">
-          <label><i class="bi bi-clock-history"></i> End Time</label>
-          <input type="time" name="end_time" class="input-lum" required>
-        </div>
-      </div>
-      <div class="field-lum">
-        <label><i class="bi bi-geo-alt-fill"></i> Venue</label>
-        <input type="text" name="venue" class="input-lum" placeholder="e.g. Exam Hall A" required>
-      </div>
-      <div class="field-lum">
-        <label><i class="bi bi-flag-fill"></i> Status</label>
-        <select name="status" class="select-lum" required>
-          <option value="scheduled">Scheduled</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
-      </div>
-      <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-        <button type="submit" class="btn-lum primary"><i class="bi bi-check-circle-fill"></i> Save Exam</button>
-        <a href="exams.php" class="btn-lum ghost">Cancel</a>
-      </div>
+
     </form>
   </div>
+
 </div>
+
 <script>
-const allSubjects = <?= json_encode($subjects) ?>;
-document.getElementById('courseSelect').addEventListener('change', function () {
-    const courseId = this.value;
-    const subjectSelect = document.getElementById('subjectSelect');
-    subjectSelect.innerHTML = '<option value="">— Select Subject —</option>';
-    if (!courseId) { subjectSelect.innerHTML = '<option value="">— Select Course First —</option>'; return; }
-    allSubjects.filter(s => String(s.course_id) === String(courseId))
-        .forEach(s => { const o=document.createElement('option'); o.value=s.subject_id; o.textContent=s.subject_name; subjectSelect.appendChild(o); });
+document.querySelectorAll('.grade-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        document.querySelectorAll('.grade-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+    });
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
