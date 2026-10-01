@@ -6,7 +6,7 @@ $current = basename($_SERVER['PHP_SELF'], '.php');
   <div class="container-fluid px-4">
     <a class="navbar-brand brand-lum" href="index.php">
       <span class="brand-mark">◈</span>
-      Exam<span class="amp">Flow</span>
+      Exam<span class="amp">Sys</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
       <span class="navbar-toggler-icon"></span>
