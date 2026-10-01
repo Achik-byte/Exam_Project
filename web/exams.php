@@ -16,7 +16,7 @@ function statusPill($s) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Exams · ExamFlow</title>
+  <title>Exams · ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/style.css" rel="stylesheet">

@@ -15,7 +15,7 @@ $greeting = $hour < 12 ? 'Good morning' : ($hour < 18 ? 'Good afternoon' : 'Good
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard · ExamFlow</title>
+  <title>Dashboard · ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/style.css" rel="stylesheet">
@@ -28,7 +28,7 @@ $greeting = $hour < 12 ? 'Good morning' : ($hour < 18 ? 'Good afternoon' : 'Good
     <div>
       <span class="eyebrow">◆ Dashboard</span>
       <h1><?= $greeting ?>, <em><?= htmlspecialchars($firstName) ?></em></h1>
-      <p class="sub">Here's what's happening in your ExamFlow today.</p>
+      <p class="sub">Here's what's happening in your ExamSys today.</p>
     </div>
     <span class="role-lum <?= htmlspecialchars($role) ?>">
       <i class="bi bi-shield-fill-check"></i> <?= htmlspecialchars($role) ?>

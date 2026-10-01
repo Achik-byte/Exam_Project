@@ -15,7 +15,7 @@ else {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Verification · ExamFlow</title>
+  <title>Verification · ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/style.css" rel="stylesheet">
@@ -77,7 +77,7 @@ else {
     </div>
 
     <div class="foot">
-      ExamFlow · Verified at <?= date('Y-m-d H:i:s') ?>
+      ExamSys · Verified at <?= date('Y-m-d H:i:s') ?>
     </div>
   </div>
 </div>
