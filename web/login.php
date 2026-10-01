@@ -31,24 +31,80 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <meta charset="UTF-8">
   <title>Login - ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-4">
-      <h3 class="mb-3">Login</h3>
+<div class="login-page">
+  <!-- LEFT SIDE -->
+  <div class="login-left">
+    <div class="login-left-content">
+      <h1>ExamSys</h1>
+      <p>Secure examination scheduling & result management system for universities and colleges.</p>
+      
+      <div class="login-features">
+        <div class="login-feature">
+          <div class="icon"><i class="bi bi-shield-check"></i></div>
+          <div>
+            <strong>JWT Authentication</strong><br>
+            <span style="opacity:0.8;font-size:0.85rem;">Secure token-based login</span>
+          </div>
+        </div>
+        <div class="login-feature">
+          <div class="icon"><i class="bi bi-people"></i></div>
+          <div>
+            <strong>Role-Based Access</strong><br>
+            <span style="opacity:0.8;font-size:0.85rem;">Admin, Lecturer, Student</span>
+          </div>
+        </div>
+        <div class="login-feature">
+          <div class="icon"><i class="bi bi-qr-code"></i></div>
+          <div>
+            <strong>QR Code Verification</strong><br>
+            <span style="opacity:0.8;font-size:0.85rem;">Third-party API integration</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div class="login-right">
+    <div class="login-form-container">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Sign in to your account to continue</p>
+
       <?php if ($error): ?>
-        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <div class="alert-modern danger">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <div><?= htmlspecialchars($error) ?></div>
+        </div>
       <?php endif; ?>
+
       <form method="POST" action="login.php">
-        <div class="mb-3"><label>Email</label>
-          <input type="text" name="email" class="form-control" required></div>
-        <div class="mb-3"><label>IC Number</label>
-          <input type="text" name="no_ic" class="form-control" required></div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
+        <div class="form-group">
+          <label class="form-label-modern">Email Address</label>
+          <input type="text" name="email" class="form-control-modern" placeholder="admin@uni.edu" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label-modern">IC Number</label>
+          <input type="text" name="no_ic" class="form-control-modern" placeholder="900101010101" required>
+        </div>
+        <button type="submit" class="btn-modern primary" style="width:100%;justify-content:center;padding:0.85rem;">
+          <i class="bi bi-box-arrow-in-right"></i> Sign In
+        </button>
       </form>
+
+      <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:0.85rem;color:var(--gray);">
+        <strong style="color:var(--dark-2);">Demo Accounts:</strong><br>
+        Admin: admin@uni.edu / 900101010101<br>
+        Lecturer: tan@uni.edu / 800202020202<br>
+        Student: siti@student.edu / 010203040506
+      </div>
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
