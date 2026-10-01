@@ -2,19 +2,16 @@
 session_start();
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['token'])) { header("Location: login.php"); exit; }
 require_once __DIR__ . '/config.php';
-
 $role = $_SESSION['role'];
 $endpoint = ($role === 'student') ? '/results?graded=1' : '/results';
 $response = apiRequest($endpoint, 'GET', null, $_SESSION['token']);
 $results  = ($response['status_code'] === 200) ? ($response['body']['data'] ?? []) : [];
 
-function gradeTone($g) {
-  if (!$g) return 'gray';
-  $first = $g[0];
-  if ($first === 'A') return 'mint';
-  if ($first === 'B') return 'cyan';
-  if ($first === 'C') return 'amber';
-  return 'red';
+function gradePill($g) {
+  if (!$g) return "<span class='pill gray'>Pending</span>";
+  $f = strtoupper($g[0]);
+  $t = $f === 'A' ? 'mint' : ($f === 'B' ? 'sky' : ($f === 'C' ? 'amber' : 'coral'));
+  return "<span class='pill $t' style='font-weight:800;'>$g</span>";
 }
 ?>
 <!DOCTYPE html>
@@ -28,13 +25,13 @@ function gradeTone($g) {
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-aurora">
+<div class="container-lum">
 
-  <div class="page-head">
+  <div class="page-head-lum">
     <div>
-      <div class="eyebrow">◆ Academic Performance</div>
-      <h1>Results</h1>
-      <p class="subtitle">
+      <span class="eyebrow">◆ Academic Records</span>
+      <h1>Published <em>results</em></h1>
+      <p class="sub">
         <?php
           if ($role === 'admin')        echo "Full result ledger — read-only.";
           elseif ($role === 'lecturer') echo "Results for students in your courses.";
@@ -42,18 +39,20 @@ function gradeTone($g) {
         ?>
       </p>
     </div>
-    <span class="chip mint"><i class="bi bi-bar-chart-fill"></i> <?= count($results) ?> records</span>
+    <span class="pill mint" style="padding:0.5rem 1rem;font-size:0.85rem;">
+      <i class="bi bi-award-fill"></i> <?= count($results) ?> records
+    </span>
   </div>
 
   <?php if (empty($results)): ?>
-    <div class="empty-neo">
+    <div class="empty-lum">
       <div class="icon"><i class="bi bi-clipboard-x"></i></div>
-      <h4>No results available</h4>
+      <h4>No results yet</h4>
       <p><?= $role === 'student' ? 'Nothing graded for you yet.' : 'No results in the system.' ?></p>
     </div>
   <?php else: ?>
-    <div class="table-wrap">
-      <table class="table-neo">
+    <div class="table-lum-wrap">
+      <table class="table-lum">
         <thead>
           <tr>
             <th>Student</th>
@@ -67,20 +66,14 @@ function gradeTone($g) {
         <tbody>
           <?php foreach ($results as $r): ?>
           <tr>
-            <td class="cell-primary"><?= htmlspecialchars($r['full_name']) ?></td>
-            <td><span class="mono" style="color:var(--cyan)"><?= htmlspecialchars($r['course_code']) ?></span></td>
+            <td class="primary"><?= htmlspecialchars($r['full_name']) ?></td>
+            <td><span class="mono"><?= htmlspecialchars($r['course_code']) ?></span></td>
             <td><?= htmlspecialchars($r['subject_name'] ?? '—') ?></td>
-            <td><span class="mono" style="font-size:1rem;color:var(--violet-2);font-weight:700;"><?= htmlspecialchars($r['marks'] ?? '—') ?></span></td>
-            <td>
-              <?php if (!empty($r['grade'])): ?>
-                <span class="chip <?= gradeTone($r['grade']) ?>"><?= htmlspecialchars($r['grade']) ?></span>
-              <?php else: ?>
-                <span class="chip gray">Pending</span>
-              <?php endif; ?>
-            </td>
+            <td><span class="mono" style="font-weight:700;color:var(--indigo);font-size:0.98rem;"><?= htmlspecialchars($r['marks'] ?? '—') ?></span></td>
+            <td><?= gradePill($r['grade'] ?? null) ?></td>
             <?php if ($role === 'lecturer'): ?>
               <td style="text-align:right;">
-                <a href="result_edit.php?id=<?= $r['result_id'] ?>" class="btn-neo ghost sm"><i class="bi bi-pencil"></i> Edit</a>
+                <a href="result_edit.php?id=<?= $r['result_id'] ?>" class="btn-lum ghost sm"><i class="bi bi-pencil"></i> Edit</a>
               </td>
             <?php endif; ?>
           </tr>

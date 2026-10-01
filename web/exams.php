@@ -2,15 +2,14 @@
 session_start();
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['token'])) { header("Location: login.php"); exit; }
 require_once __DIR__ . '/config.php';
-
 $role = $_SESSION['role'];
 $response = apiRequest('/examinations', 'GET', null, $_SESSION['token']);
 $exams    = ($response['status_code'] === 200) ? ($response['body']['data'] ?? []) : [];
 
-function statusChip($s) {
-  $map = ['scheduled' => 'cyan', 'completed' => 'mint', 'cancelled' => 'red'];
-  $tone = $map[strtolower($s)] ?? 'gray';
-  return "<span class='chip $tone'><i class='bi bi-circle-fill' style='font-size:.5rem;'></i> ".htmlspecialchars($s)."</span>";
+function statusPill($s) {
+  $map = ['scheduled'=>'sky', 'completed'=>'mint', 'cancelled'=>'coral'];
+  $t = $map[strtolower($s)] ?? 'gray';
+  return "<span class='pill $t'><span class='dot'></span> ".htmlspecialchars($s)."</span>";
 }
 ?>
 <!DOCTYPE html>
@@ -24,13 +23,13 @@ function statusChip($s) {
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-aurora">
+<div class="container-lum">
 
-  <div class="page-head">
+  <div class="page-head-lum">
     <div>
-      <div class="eyebrow">◆ Schedule</div>
-      <h1>Examinations</h1>
-      <p class="subtitle">
+      <span class="eyebrow">◆ Schedule</span>
+      <h1>Exam <em>timetable</em></h1>
+      <p class="sub">
         <?php
           if ($role === 'admin')        echo "Full exam control — create, update, or remove.";
           elseif ($role === 'lecturer') echo "View only. All scheduled exams.";
@@ -39,19 +38,19 @@ function statusChip($s) {
       </p>
     </div>
     <?php if ($role === 'admin'): ?>
-      <a href="exam_add.php" class="btn-neo violet"><i class="bi bi-plus-lg"></i> New Exam</a>
+      <a href="exam_add.php" class="btn-lum primary"><i class="bi bi-plus-lg"></i> New Exam</a>
     <?php endif; ?>
   </div>
 
   <?php if (empty($exams)): ?>
-    <div class="empty-neo">
+    <div class="empty-lum">
       <div class="icon"><i class="bi bi-calendar-x"></i></div>
       <h4>No exams scheduled</h4>
-      <p>No exams have been added to the system yet.</p>
+      <p>No exams have been added yet.</p>
     </div>
   <?php else: ?>
-    <div class="table-wrap">
-      <table class="table-neo">
+    <div class="table-lum-wrap">
+      <table class="table-lum">
         <thead>
           <tr>
             <th>Course</th>
@@ -67,18 +66,18 @@ function statusChip($s) {
           <?php foreach ($exams as $e): ?>
           <tr>
             <td>
-              <div class="cell-primary"><?= htmlspecialchars($e['course_code']) ?></div>
-              <div class="cell-muted"><?= htmlspecialchars($e['course_title']) ?></div>
+              <div class="primary"><?= htmlspecialchars($e['course_code']) ?></div>
+              <div class="muted"><?= htmlspecialchars($e['course_title']) ?></div>
             </td>
             <td><?= htmlspecialchars($e['subject_name']) ?></td>
             <td><span class="mono"><?= htmlspecialchars($e['exam_date']) ?></span></td>
-            <td><span class="mono"><?= htmlspecialchars(substr($e['start_time'],0,5)) ?> – <?= htmlspecialchars(substr($e['end_time'],0,5)) ?></span></td>
-            <td><i class="bi bi-geo-alt-fill" style="color:var(--pink)"></i> <?= htmlspecialchars($e['venue']) ?></td>
-            <td><?= statusChip($e['status']) ?></td>
+            <td><span class="mono"><?= htmlspecialchars(substr($e['start_time'],0,5)) ?>–<?= htmlspecialchars(substr($e['end_time'],0,5)) ?></span></td>
+            <td><i class="bi bi-geo-alt-fill" style="color:var(--coral)"></i> <?= htmlspecialchars($e['venue']) ?></td>
+            <td><?= statusPill($e['status']) ?></td>
             <?php if ($role === 'admin'): ?>
-              <td style="text-align:right;">
-                <a href="exam_edit.php?id=<?= $e['exam_id'] ?>" class="btn-neo ghost sm"><i class="bi bi-pencil"></i></a>
-                <a href="exam_delete.php?id=<?= $e['exam_id'] ?>" class="btn-neo danger sm" onclick="return confirm('Delete this exam?')"><i class="bi bi-trash3"></i></a>
+              <td style="text-align:right;white-space:nowrap;">
+                <a href="exam_edit.php?id=<?= $e['exam_id'] ?>" class="btn-lum ghost sm"><i class="bi bi-pencil"></i></a>
+                <a href="exam_delete.php?id=<?= $e['exam_id'] ?>" class="btn-lum danger sm" onclick="return confirm('Delete this exam?')"><i class="bi bi-trash3"></i></a>
               </td>
             <?php endif; ?>
           </tr>

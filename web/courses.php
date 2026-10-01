@@ -2,12 +2,11 @@
 session_start();
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['token'])) { header("Location: login.php"); exit; }
 require_once __DIR__ . '/config.php';
-
 $role = $_SESSION['role'];
 $response = apiRequest('/courses', 'GET', null, $_SESSION['token']);
 $courses  = ($response['status_code'] === 200) ? ($response['body']['data'] ?? []) : [];
 $error    = ($response['status_code'] !== 200) ? ($response['body']['message'] ?? 'Failed') : '';
-$palette  = ['violet','cyan','mint','pink','amber'];
+$tones = ['indigo','mint','amber','coral','sky','violet'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,13 +19,13 @@ $palette  = ['violet','cyan','mint','pink','amber'];
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-aurora">
+<div class="container-lum">
 
-  <div class="page-head">
+  <div class="page-head-lum">
     <div>
-      <div class="eyebrow">◆ Curriculum</div>
-      <h1>Courses</h1>
-      <p class="subtitle">
+      <span class="eyebrow">◆ Curriculum</span>
+      <h1>Our <em>courses</em></h1>
+      <p class="sub">
         <?php
           if ($role === 'admin')        echo "Complete course catalog across the institution.";
           elseif ($role === 'lecturer') echo "Courses you are assigned to teach.";
@@ -34,26 +33,28 @@ $palette  = ['violet','cyan','mint','pink','amber'];
         ?>
       </p>
     </div>
-    <span class="chip violet"><i class="bi bi-collection-fill"></i> <?= count($courses) ?> total</span>
+    <span class="pill indigo" style="padding:0.5rem 1rem;font-size:0.85rem;">
+      <i class="bi bi-collection-fill"></i> <?= count($courses) ?> courses
+    </span>
   </div>
 
   <?php if ($error): ?>
-    <div class="alert-neo danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
+    <div class="alert-lum danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
   <?php elseif (empty($courses)): ?>
-    <div class="empty-neo">
+    <div class="empty-lum">
       <div class="icon"><i class="bi bi-inbox"></i></div>
-      <h4>No courses found</h4>
-      <p>The course catalog is empty.</p>
+      <h4>No courses yet</h4>
+      <p>The course catalog is currently empty.</p>
     </div>
   <?php else: ?>
-    <div class="subject-grid">
-      <?php foreach ($courses as $i => $c): $tone = $palette[$i % count($palette)]; ?>
-      <div class="subject-card">
-        <div class="code"><?= htmlspecialchars($c['course_code']) ?></div>
+    <div class="grid-lum">
+      <?php foreach ($courses as $i => $c): $tone = $tones[$i % count($tones)]; ?>
+      <div class="tile-lum <?= $tone ?>">
+        <span class="code"><?= htmlspecialchars($c['course_code']) ?></span>
         <div class="name"><?= htmlspecialchars($c['course_title']) ?></div>
         <div class="meta">
-          <span class="chip <?= $tone ?>"><i class="bi bi-award-fill"></i> <?= htmlspecialchars($c['credits'] ?? '—') ?> credits</span>
-          <span class="chip gray"><i class="bi bi-person-video3"></i> <?= htmlspecialchars($c['lecturer_name'] ?? 'TBA') ?></span>
+          <span class="pill gray"><i class="bi bi-award-fill"></i> <?= htmlspecialchars($c['credits'] ?? '—') ?> credits</span>
+          <span class="pill gray"><i class="bi bi-person-video3"></i> <?= htmlspecialchars($c['lecturer_name'] ?? 'TBA') ?></span>
         </div>
       </div>
       <?php endforeach; ?>

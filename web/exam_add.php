@@ -37,79 +37,72 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-aurora" style="max-width:800px;">
-
-  <div class="page-head">
+<div class="container-lum" style="max-width:820px;">
+  <div class="page-head-lum">
     <div>
-      <div class="eyebrow">◆ New Entry</div>
-      <h1>Add Exam</h1>
-      <p class="subtitle">Schedule a new examination session.</p>
+      <span class="eyebrow">◆ New Entry</span>
+      <h1>Add <em>exam</em></h1>
+      <p class="sub">Schedule a new examination session.</p>
     </div>
-    <a href="exams.php" class="btn-neo ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    <a href="exams.php" class="btn-lum ghost"><i class="bi bi-arrow-left"></i> Back</a>
   </div>
 
   <?php if ($error): ?>
-    <div class="alert-neo danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
+    <div class="alert-lum danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
   <?php endif; ?>
 
-  <div class="glass">
+  <div class="card-lum flat">
     <form method="POST">
       <div class="grid-2">
-        <div class="field">
+        <div class="field-lum">
           <label><i class="bi bi-collection-fill"></i> Course</label>
-          <select name="course_id" id="courseSelect" class="select-neo" required>
+          <select name="course_id" id="courseSelect" class="select-lum" required>
             <option value="">— Select Course —</option>
             <?php foreach ($courses as $c): ?>
               <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_code'].' - '.$c['course_title']) ?></option>
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="field">
+        <div class="field-lum">
           <label><i class="bi bi-bookmark-fill"></i> Subject</label>
-          <select name="subject_id" id="subjectSelect" class="select-neo" required>
+          <select name="subject_id" id="subjectSelect" class="select-lum" required>
             <option value="">— Select Course First —</option>
           </select>
         </div>
       </div>
-
-      <div class="field">
-        <label><i class="bi bi-calendar-event-fill"></i> Exam Date</label>
-        <input type="date" name="exam_date" class="input-neo" required>
+      <div class="field-lum">
+        <label><i class="bi bi-calendar-event-fill"></i> Date</label>
+        <input type="date" name="exam_date" class="input-lum" required>
       </div>
-
       <div class="grid-2">
-        <div class="field">
+        <div class="field-lum">
           <label><i class="bi bi-clock-fill"></i> Start Time</label>
-          <input type="time" name="start_time" class="input-neo" required>
+          <input type="time" name="start_time" class="input-lum" required>
         </div>
-        <div class="field">
+        <div class="field-lum">
           <label><i class="bi bi-clock-history"></i> End Time</label>
-          <input type="time" name="end_time" class="input-neo" required>
+          <input type="time" name="end_time" class="input-lum" required>
         </div>
       </div>
-
-      <div class="field">
+      <div class="field-lum">
         <label><i class="bi bi-geo-alt-fill"></i> Venue</label>
-        <input type="text" name="venue" class="input-neo" placeholder="e.g. Exam Hall A" required>
+        <input type="text" name="venue" class="input-lum" placeholder="e.g. Exam Hall A" required>
       </div>
-
-      <div class="field">
+      <div class="field-lum">
         <label><i class="bi bi-flag-fill"></i> Status</label>
-        <select name="status" class="select-neo" required>
+        <select name="status" class="select-lum" required>
           <option value="scheduled">Scheduled</option>
           <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>
         </select>
       </div>
-
       <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-        <button type="submit" class="btn-neo violet"><i class="bi bi-check-circle-fill"></i> Save Exam</button>
-        <a href="exams.php" class="btn-neo ghost">Cancel</a>
+        <button type="submit" class="btn-lum primary"><i class="bi bi-check-circle-fill"></i> Save Exam</button>
+        <a href="exams.php" class="btn-lum ghost">Cancel</a>
       </div>
     </form>
   </div>
 </div>
-
 <script>
 const allSubjects = <?= json_encode($subjects) ?>;
 document.getElementById('courseSelect').addEventListener('change', function () {
@@ -118,12 +111,7 @@ document.getElementById('courseSelect').addEventListener('change', function () {
     subjectSelect.innerHTML = '<option value="">— Select Subject —</option>';
     if (!courseId) { subjectSelect.innerHTML = '<option value="">— Select Course First —</option>'; return; }
     allSubjects.filter(s => String(s.course_id) === String(courseId))
-        .forEach(s => {
-            const opt = document.createElement('option');
-            opt.value = s.subject_id;
-            opt.textContent = s.subject_name;
-            subjectSelect.appendChild(opt);
-        });
+        .forEach(s => { const o=document.createElement('option'); o.value=s.subject_id; o.textContent=s.subject_name; subjectSelect.appendChild(o); });
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -64,106 +64,81 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-aurora" style="max-width:820px;">
-
-  <div class="page-head">
+<div class="container-lum" style="max-width:820px;">
+  <div class="page-head-lum">
     <div>
-      <div class="eyebrow">◆ New Account</div>
-      <h1>Add User</h1>
-      <p class="subtitle">Create a new admin, lecturer, or student account.</p>
+      <span class="eyebrow">◆ New Entry</span>
+      <h1>Add <em>exam</em></h1>
+      <p class="sub">Schedule a new examination session.</p>
     </div>
-    <a href="users.php" class="btn-neo ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    <a href="exams.php" class="btn-lum ghost"><i class="bi bi-arrow-left"></i> Back</a>
   </div>
 
   <?php if ($error): ?>
-    <div class="alert-neo danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= $error ?></div></div>
+    <div class="alert-lum danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
   <?php endif; ?>
 
-  <div class="glass">
-    <form method="POST" id="userForm">
+  <div class="card-lum flat">
+    <form method="POST">
       <div class="grid-2">
-        <div class="field">
-          <label><i class="bi bi-person-fill"></i> Full Name</label>
-          <input type="text" name="full_name" class="input-neo" required>
-        </div>
-        <div class="field">
-          <label><i class="bi bi-envelope-fill"></i> Email</label>
-          <input type="email" name="email" class="input-neo" required>
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="field">
-          <label><i class="bi bi-shield-fill"></i> Role</label>
-          <select name="role" id="roleSelect" class="select-neo" required>
-            <option value="">— Select Role —</option>
-            <option value="admin">Admin</option>
-            <option value="lecturer">Lecturer</option>
-            <option value="student">Student</option>
-          </select>
-        </div>
-        <div class="field">
-          <label><i class="bi bi-person-vcard-fill"></i> Matric No (Student)</label>
-          <input type="text" name="matric_no" class="input-neo">
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="field">
-          <label><i class="bi bi-credit-card-2-front-fill"></i> IC Number</label>
-          <input type="text" name="no_ic" class="input-neo" required>
-        </div>
-        <div class="field">
-          <label><i class="bi bi-telephone-fill"></i> Phone</label>
-          <input type="text" name="phone" class="input-neo">
-        </div>
-      </div>
-
-      <div id="enrollmentSection" style="display:none;padding:1.25rem;border:1px dashed var(--border-hi);border-radius:14px;margin:1rem 0;">
-        <h5 style="font-weight:700;margin:0 0 1rem;color:var(--violet-2);"><i class="bi bi-journal-plus"></i> Course & Subject Enrollment</h5>
-        <div class="field">
-          <label>Course</label>
-          <select name="course_id" id="courseSelect" class="select-neo">
+        <div class="field-lum">
+          <label><i class="bi bi-collection-fill"></i> Course</label>
+          <select name="course_id" id="courseSelect" class="select-lum" required>
             <option value="">— Select Course —</option>
             <?php foreach ($courses as $c): ?>
               <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_code'].' - '.$c['course_title']) ?></option>
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="field">
-          <label>Subjects (max 4)</label>
-          <div id="subjectList" style="min-height:50px;"><em style="color:var(--text-3);">Select a course first.</em></div>
+        <div class="field-lum">
+          <label><i class="bi bi-bookmark-fill"></i> Subject</label>
+          <select name="subject_id" id="subjectSelect" class="select-lum" required>
+            <option value="">— Select Course First —</option>
+          </select>
         </div>
       </div>
-
+      <div class="field-lum">
+        <label><i class="bi bi-calendar-event-fill"></i> Date</label>
+        <input type="date" name="exam_date" class="input-lum" required>
+      </div>
+      <div class="grid-2">
+        <div class="field-lum">
+          <label><i class="bi bi-clock-fill"></i> Start Time</label>
+          <input type="time" name="start_time" class="input-lum" required>
+        </div>
+        <div class="field-lum">
+          <label><i class="bi bi-clock-history"></i> End Time</label>
+          <input type="time" name="end_time" class="input-lum" required>
+        </div>
+      </div>
+      <div class="field-lum">
+        <label><i class="bi bi-geo-alt-fill"></i> Venue</label>
+        <input type="text" name="venue" class="input-lum" placeholder="e.g. Exam Hall A" required>
+      </div>
+      <div class="field-lum">
+        <label><i class="bi bi-flag-fill"></i> Status</label>
+        <select name="status" class="select-lum" required>
+          <option value="scheduled">Scheduled</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
       <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-        <button type="submit" class="btn-neo violet"><i class="bi bi-check-circle-fill"></i> Save User</button>
-        <a href="users.php" class="btn-neo ghost">Cancel</a>
+        <button type="submit" class="btn-lum primary"><i class="bi bi-check-circle-fill"></i> Save Exam</button>
+        <a href="exams.php" class="btn-lum ghost">Cancel</a>
       </div>
     </form>
   </div>
 </div>
-
 <script>
-var allSubjects = <?= json_encode($subjects) ?>;
-document.getElementById('roleSelect').addEventListener('change', function() {
-    document.getElementById('enrollmentSection').style.display = (this.value === 'student') ? 'block' : 'none';
-});
-document.getElementById('courseSelect').addEventListener('change', function() {
-    var courseId = this.value;
-    var list = document.getElementById('subjectList');
-    if (!courseId) { list.innerHTML = '<em style="color:var(--text-3);">Select a course first.</em>'; return; }
-    var filtered = allSubjects.filter(s => String(s.course_id) === String(courseId));
-    if (filtered.length === 0) { list.innerHTML = '<em style="color:var(--red);">No subjects available.</em>'; return; }
-    list.innerHTML = '';
-    filtered.forEach(function(s) {
-        var div = document.createElement('label');
-        div.className = 'check-neo';
-        div.style.marginBottom = '0.5rem';
-        div.innerHTML = '<input type="checkbox" name="subjects[]" value="'+s.subject_id+'" class="subject-cb"><span>'+s.subject_name+'</span>';
-        list.appendChild(div);
-    });
-    document.querySelectorAll('.subject-cb').forEach(cb => cb.addEventListener('change', function() {
-        if (document.querySelectorAll('.subject-cb:checked').length > 4) { this.checked=false; alert('Maximum 4 subjects.'); }
-    }));
+const allSubjects = <?= json_encode($subjects) ?>;
+document.getElementById('courseSelect').addEventListener('change', function () {
+    const courseId = this.value;
+    const subjectSelect = document.getElementById('subjectSelect');
+    subjectSelect.innerHTML = '<option value="">— Select Subject —</option>';
+    if (!courseId) { subjectSelect.innerHTML = '<option value="">— Select Course First —</option>'; return; }
+    allSubjects.filter(s => String(s.course_id) === String(courseId))
+        .forEach(s => { const o=document.createElement('option'); o.value=s.subject_id; o.textContent=s.subject_name; subjectSelect.appendChild(o); });
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
