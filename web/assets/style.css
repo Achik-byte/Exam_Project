@@ -631,3 +631,76 @@ code, .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.82em; font-
 ::-webkit-scrollbar-thumb { background: var(--ink); border: 3px solid var(--bg-2); }
 
 ::selection { background: var(--yellow); color: var(--ink); }
+/* ============================================================
+   AUTO-FIX: Buat semua table nampak kemas
+   ============================================================ */
+
+/* Fix setiap table dalam sistem */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--paper, #ffffff);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+table thead {
+  background: var(--ink, #0a0a0a);
+  color: var(--yellow, #ffd60a);
+}
+
+table thead th {
+  padding: 1rem 1.15rem;
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-right: 1px solid rgba(255,214,10,0.15);
+}
+
+table thead th:last-child { border-right: none; }
+
+table tbody td {
+  padding: 1rem 1.15rem;
+  border-bottom: 2px solid var(--ink, #0a0a0a);
+  font-size: 0.9rem;
+  vertical-align: middle;
+  color: var(--ink, #0a0a0a);
+}
+
+table tbody tr:last-child td { border-bottom: none; }
+
+table tbody tr:hover {
+  background: var(--yellow, #ffd60a);
+  transition: background 0.15s;
+}
+
+/* Bungkus table dalam wrapper */
+.table-nb-wrap,
+.table-wrapper,
+.table-responsive,
+[class*="table"] {
+  border: 2.5px solid var(--ink, #0a0a0a);
+  box-shadow: 6px 6px 0 var(--ink, #0a0a0a);
+  overflow: hidden;
+  background: var(--paper, #ffffff);
+  margin-bottom: 1.5rem;
+}
+
+/* Buang border Bootstrap yang ganggu */
+.table-bordered,
+.table-striped {
+  border: none !important;
+}
+
+.table-bordered > :not(caption) > * > * {
+  border-width: 0 !important;
+  border-bottom: 2px solid var(--ink, #0a0a0a) !important;
+}
+
+/* Table responsive scroll */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
