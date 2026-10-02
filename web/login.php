@@ -30,64 +30,54 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
-<div class="login-lum">
+<div class="login-nb">
 
   <div class="visual">
     <div class="visual-inner">
-      <span class="tag"><i class="bi bi-stars"></i> Academic Excellence Suite</span>
-      <h1>A quieter way<br>to manage <em>examinations.</em></h1>
-      <p class="desc">A calm, elegant platform for scheduling, grading, and verifying examinations across your institution.</p>
+      <span class="brand-tag">◈ ACADEMIC SUITE 2026</span>
+      <h1>Study.<br>Test.<br><em>Excel.</em></h1>
+      <p class="desc">A bold platform for scheduling exams, tracking results, and verifying students — designed for institutions that mean business.</p>
     </div>
-
     <div class="feats">
       <div class="feat">
-        <div class="ic"><i class="bi bi-shield-check"></i></div>
-        <div><div class="ttl">Secure Authentication</div><div class="sub">Token-based access control</div></div>
+        <div class="ic"><i class="bi bi-shield-lock-fill"></i></div>
+        <div><div class="ttl">Token Security</div><div class="sub">JWT-based authentication</div></div>
       </div>
       <div class="feat">
         <div class="ic"><i class="bi bi-people-fill"></i></div>
-        <div><div class="ttl">Role-Aware Experience</div><div class="sub">Admin · Lecturer · Student</div></div>
+        <div><div class="ttl">Role-Aware</div><div class="sub">Admin · Lecturer · Student</div></div>
       </div>
       <div class="feat">
         <div class="ic"><i class="bi bi-qr-code"></i></div>
-        <div><div class="ttl">QR Verification</div><div class="sub">Instant exam-hall validation</div></div>
+        <div><div class="ttl">QR Verification</div><div class="sub">Instant exam-hall checks</div></div>
       </div>
     </div>
   </div>
 
   <div class="form-panel">
     <div class="form-inner">
-      <div class="logo">◈</div>
-      <h2>Welcome back</h2>
-      <p class="sub2">Sign in to continue to your dashboard.</p>
+      <div class="logo">E</div>
+      <h2>Sign in</h2>
+      <p class="sub2">&gt; Enter your credentials to continue</p>
 
       <?php if ($error): ?>
-        <div class="alert-lum danger">
-          <i class="bi bi-exclamation-octagon-fill"></i>
-          <div><?= htmlspecialchars($error) ?></div>
-        </div>
+        <div class="alert-nb danger"><i class="bi bi-exclamation-triangle-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
       <?php endif; ?>
 
       <form method="POST" action="login.php">
-        <div class="field-lum">
-          <label><i class="bi bi-envelope-fill"></i> Email Address</label>
-          <input type="text" name="email" class="input-lum" placeholder="admin@uni.edu" required autofocus>
+        <div class="field-nb">
+          <label>▸ Email Address</label>
+          <input type="text" name="email" class="input-nb" placeholder="admin@uni.edu" required autofocus>
         </div>
-        <div class="field-lum">
-          <label><i class="bi bi-shield-lock-fill"></i> IC Number</label>
-          <input type="text" name="no_ic" class="input-lum" placeholder="900101010101" required>
+        <div class="field-nb">
+          <label>▸ IC Number</label>
+          <input type="text" name="no_ic" class="input-nb" placeholder="900101010101" required>
         </div>
-        <button type="submit" class="btn-lum primary block" style="padding:0.9rem;">
+        <button type="submit" class="btn-nb primary block" style="padding:1rem;">
           <i class="bi bi-arrow-right"></i> Continue
         </button>
       </form>
 
-      <div class="demo-card">
-        <strong><i class="bi bi-key-fill"></i> Demo Accounts</strong>
-        <span class="acc">admin</span> · admin@uni.edu / 900101010101<br>
-        <span class="acc">lecturer</span> · tan@uni.edu / 800202020202<br>
-        <span class="acc">student</span> · siti@student.edu / 010203040506
-      </div>
     </div>
   </div>
 

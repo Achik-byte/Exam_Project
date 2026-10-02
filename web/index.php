@@ -8,8 +8,6 @@ $response = apiRequest('/profile', 'GET', null, $_SESSION['token']);
 if ($response['status_code'] === 401) { session_destroy(); header("Location: login.php"); exit; }
 $userData = $response['body']['data'] ?? [];
 $firstName = explode(' ', $_SESSION['full_name'])[0];
-$hour = (int)date('H');
-$greeting = $hour < 12 ? 'Good morning' : ($hour < 18 ? 'Good afternoon' : 'Good evening');
 ?>
 <!DOCTYPE html>
 <html lang="en">
