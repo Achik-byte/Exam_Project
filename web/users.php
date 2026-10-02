@@ -13,64 +13,86 @@ $users    = $data['users'] ?? $data;
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Manage Users - ExamSys</title>
+  <title>Manage Users · ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-modern">
-  <div class="page-header">
+<div class="container-lum">
+
+  <div class="page-head-lum">
     <div>
-      <h1>Manage Users</h1>
-      <p class="subtitle">Add, edit, or remove users from the system</p>
+      <span class="eyebrow">◆ Administration</span>
+      <h1>Manage <em>users</em></h1>
+      <p class="sub">Add, edit, or remove users from the system.</p>
     </div>
-    <a href="user_add.php" class="btn-modern primary"><i class="bi bi-plus-circle"></i> Add New User</a>
+    <a href="user_add.php" class="btn-lum primary">
+      <i class="bi bi-person-plus-fill"></i> Add New User
+    </a>
+  </div>
+
+  <div class="mb-3" style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+    <span class="pill indigo" style="padding:0.5rem 0.9rem;font-size:0.82rem;">
+      <i class="bi bi-people-fill"></i> <?= count($users) ?> total users
+    </span>
   </div>
 
   <?php if (empty($users)): ?>
-    <div class="empty-state">
+    <div class="empty-lum">
       <div class="icon"><i class="bi bi-people"></i></div>
-      <h4>No Users Found</h4>
-      <p>There are no users in the system yet.</p>
+      <h4>No users found</h4>
+      <p>There are no users in the system yet. Start by adding one.</p>
     </div>
   <?php else: ?>
-    <div style="overflow-x:auto;">
-      <table class="table-modern">
+    <div class="table-lum-wrap">
+      <table class="table-lum">
         <thead>
           <tr>
-            <th>ID</th><th>Full Name</th><th>Email</th><th>Role</th>
-            <th>Matric No</th><th>Phone</th><th>Status</th><th>Action</th>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Matric No</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th style="text-align:right;">Action</th>
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($users as $u): ?>
+          <?php foreach ($users as $u):
+            $roleTone = 'indigo';
+            if ($u['role'] === 'admin') $roleTone = 'amber';
+            elseif ($u['role'] === 'student') $roleTone = 'mint';
+          ?>
           <tr>
-            <td><?= $u['user_id'] ?></td>
-            <td><?= htmlspecialchars($u['full_name']) ?></td>
-            <td><?= htmlspecialchars($u['email']) ?></td>
+            <td><span class="mono">#<?= htmlspecialchars($u['user_id']) ?></span></td>
             <td>
-              <?php
-                $roleClass = 'primary';
-                if ($u['role'] === 'admin') $roleClass = 'warning';
-                elseif ($u['role'] === 'student') $roleClass = 'success';
-              ?>
-              <span class="badge-modern <?= $roleClass ?>"><?= htmlspecialchars($u['role']) ?></span>
+              <div class="primary"><?= htmlspecialchars($u['full_name']) ?></div>
             </td>
-            <td><?= htmlspecialchars($u['matric_no'] ?? '-') ?></td>
-            <td><?= htmlspecialchars($u['phone'] ?? '-') ?></td>
+            <td><span class="mono" style="font-size:0.82rem;"><?= htmlspecialchars($u['email']) ?></span></td>
+            <td>
+              <span class="pill <?= $roleTone ?>">
+                <span class="dot"></span> <?= ucfirst(htmlspecialchars($u['role'])) ?>
+              </span>
+            </td>
+            <td><span class="mono"><?= htmlspecialchars($u['matric_no'] ?? '—') ?></span></td>
+            <td><?= htmlspecialchars($u['phone'] ?? '—') ?></td>
             <td>
               <?php if ($u['is_active']): ?>
-                <span class="badge-modern success">Active</span>
+                <span class="pill mint"><span class="dot"></span> Active</span>
               <?php else: ?>
-                <span class="badge-modern gray">Inactive</span>
+                <span class="pill gray"><span class="dot"></span> Inactive</span>
               <?php endif; ?>
             </td>
-            <td>
-              <a href="user_edit.php?id=<?= $u['user_id'] ?>" class="btn-modern warning sm">Edit</a>
-              <a href="user_delete.php?id=<?= $u['user_id'] ?>" class="btn-modern danger sm" onclick="return confirm('Delete?')">Delete</a>
+            <td style="text-align:right;white-space:nowrap;">
+              <a href="user_edit.php?id=<?= $u['user_id'] ?>" class="btn-lum ghost sm" title="Edit">
+                <i class="bi bi-pencil-fill"></i>
+              </a>
+              <a href="user_delete.php?id=<?= $u['user_id'] ?>" class="btn-lum danger sm" title="Delete" onclick="return confirm('Delete this user?')">
+                <i class="bi bi-trash3-fill"></i>
+              </a>
             </td>
           </tr>
           <?php endforeach; ?>
@@ -78,6 +100,7 @@ $users    = $data['users'] ?? $data;
       </table>
     </div>
   <?php endif; ?>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
