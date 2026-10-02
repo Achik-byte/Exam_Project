@@ -20,84 +20,65 @@ $users    = $data['users'] ?? $data;
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-lum">
+<div class="container-glass">
 
-  <div class="page-head-lum">
+  <div class="head-glass">
     <div>
-      <span class="eyebrow">◆ Administration</span>
+      <span class="eyebrow">◆ Access Control</span>
       <h1>Manage <em>users</em></h1>
-      <p class="sub">Add, edit, or remove users from the system.</p>
+      <p class="sub">Every account on the platform.</p>
     </div>
-    <a href="user_add.php" class="btn-lum primary">
-      <i class="bi bi-person-plus-fill"></i> Add New User
-    </a>
-  </div>
-
-  <div class="mb-3" style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-    <span class="pill indigo" style="padding:0.5rem 0.9rem;font-size:0.82rem;">
-      <i class="bi bi-people-fill"></i> <?= count($users) ?> total users
-    </span>
+    <a href="user_add.php" class="btn-glass primary"><i class="bi bi-person-plus-fill"></i> Add User</a>
   </div>
 
   <?php if (empty($users)): ?>
-    <div class="empty-lum">
+    <div class="empty-glass">
       <div class="icon"><i class="bi bi-people"></i></div>
       <h4>No users found</h4>
-      <p>There are no users in the system yet. Start by adding one.</p>
+      <p>There are no users in the system yet.</p>
     </div>
   <?php else: ?>
-    <div class="table-lum-wrap">
-      <table class="table-lum">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Matric No</th>
-            <th>Phone</th>
-            <th>Status</th>
-            <th style="text-align:right;">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($users as $u):
-            $roleTone = 'indigo';
-            if ($u['role'] === 'admin') $roleTone = 'amber';
-            elseif ($u['role'] === 'student') $roleTone = 'mint';
-          ?>
-          <tr>
-            <td><span class="mono">#<?= htmlspecialchars($u['user_id']) ?></span></td>
-            <td>
-              <div class="primary"><?= htmlspecialchars($u['full_name']) ?></div>
-            </td>
-            <td><span class="mono" style="font-size:0.82rem;"><?= htmlspecialchars($u['email']) ?></span></td>
-            <td>
-              <span class="pill <?= $roleTone ?>">
-                <span class="dot"></span> <?= ucfirst(htmlspecialchars($u['role'])) ?>
-              </span>
-            </td>
-            <td><span class="mono"><?= htmlspecialchars($u['matric_no'] ?? '—') ?></span></td>
-            <td><?= htmlspecialchars($u['phone'] ?? '—') ?></td>
-            <td>
-              <?php if ($u['is_active']): ?>
-                <span class="pill mint"><span class="dot"></span> Active</span>
-              <?php else: ?>
-                <span class="pill gray"><span class="dot"></span> Inactive</span>
-              <?php endif; ?>
-            </td>
-            <td style="text-align:right;white-space:nowrap;">
-              <a href="user_edit.php?id=<?= $u['user_id'] ?>" class="btn-lum ghost sm" title="Edit">
-                <i class="bi bi-pencil-fill"></i>
-              </a>
-              <a href="user_delete.php?id=<?= $u['user_id'] ?>" class="btn-lum danger sm" title="Delete" onclick="return confirm('Delete this user?')">
-                <i class="bi bi-trash3-fill"></i>
-              </a>
-            </td>
-          </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
+    <div class="grid-glass">
+      <?php foreach ($users as $u):
+        $tone = 'blue';
+        if ($u['role'] === 'admin') $tone = 'amber';
+        elseif ($u['role'] === 'student') $tone = 'green';
+        elseif ($u['role'] === 'lecturer') $tone = 'purple';
+        $initial = strtoupper(substr($u['full_name'], 0, 1));
+      ?>
+      <div class="tile-glass <?= $tone ?>">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.1);border:1px solid var(--glass-line);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:white;">
+            <?= $initial ?>
+          </div>
+          <span class="pill-glass <?= $tone ?>"><span class="dot"></span> <?= ucfirst(htmlspecialchars($u['role'])) ?></span>
+        </div>
+        <div class="name" style="margin-bottom:0.5rem;"><?= htmlspecialchars($u['full_name']) ?></div>
+        <div style="display:flex;flex-direction:column;gap:0.35rem;font-size:0.82rem;color:var(--ink-3);margin-bottom:1rem;">
+          <div><i class="bi bi-hash"></i> ID <?= htmlspecialchars($u['user_id']) ?></div>
+          <div><i class="bi bi-envelope-fill"></i> <?= htmlspecialchars($u['email']) ?></div>
+          <?php if (!empty($u['phone'])): ?>
+            <div><i class="bi bi-phone-fill"></i> <?= htmlspecialchars($u['phone']) ?></div>
+          <?php endif; ?>
+          <?php if (!empty($u['matric_no'])): ?>
+            <div><i class="bi bi-person-vcard-fill"></i> <?= htmlspecialchars($u['matric_no']) ?></div>
+          <?php endif; ?>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;padding-top:1rem;border-top:1px solid var(--glass-line);">
+          <div>
+            <?php if ($u['is_active']): ?>
+              <span class="pill-glass green"><span class="dot"></span> Active</span>
+            <?php else: ?>
+              <span class="pill-glass gray"><span class="dot"></span> Inactive</span>
+            <?php endif; ?>
+          </div>
+          <div style="display:flex;gap:0.35rem;">
+            <a href="user_edit.php?id=<?= $u['user_id'] ?>" class="btn-glass sm" title="Edit"><i class="bi bi-pencil-fill"></i></a>
+            <a href="user_delete.php?id=<?= $u['user_id'] ?>" class="btn-glass sm red" title="Delete" onclick="return confirm('Delete this user?')"><i class="bi bi-trash3-fill"></i></a>
+          </div>
+        </div>
+      </div>
+      <?php endforeach; ?>
     </div>
   <?php endif; ?>
 

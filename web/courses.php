@@ -6,7 +6,7 @@ $role = $_SESSION['role'];
 $response = apiRequest('/courses', 'GET', null, $_SESSION['token']);
 $courses  = ($response['status_code'] === 200) ? ($response['body']['data'] ?? []) : [];
 $error    = ($response['status_code'] !== 200) ? ($response['body']['message'] ?? 'Failed') : '';
-$tones = ['indigo','mint','amber','coral','sky','violet'];
+$tones = ['', 'green', 'amber', 'purple', 'pink'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,9 +19,9 @@ $tones = ['indigo','mint','amber','coral','sky','violet'];
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-lum">
+<div class="container-glass">
 
-  <div class="page-head-lum">
+  <div class="head-glass">
     <div>
       <span class="eyebrow">◆ Curriculum</span>
       <h1>Our <em>courses</em></h1>
@@ -33,28 +33,28 @@ $tones = ['indigo','mint','amber','coral','sky','violet'];
         ?>
       </p>
     </div>
-    <span class="pill indigo" style="padding:0.5rem 1rem;font-size:0.85rem;">
+    <span class="pill-glass blue" style="padding:0.6rem 1rem;font-size:0.85rem;">
       <i class="bi bi-collection-fill"></i> <?= count($courses) ?> courses
     </span>
   </div>
 
   <?php if ($error): ?>
-    <div class="alert-lum danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
+    <div class="alert-glass danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
   <?php elseif (empty($courses)): ?>
-    <div class="empty-lum">
+    <div class="empty-glass">
       <div class="icon"><i class="bi bi-inbox"></i></div>
       <h4>No courses yet</h4>
       <p>The course catalog is currently empty.</p>
     </div>
   <?php else: ?>
-    <div class="grid-lum">
+    <div class="grid-glass">
       <?php foreach ($courses as $i => $c): $tone = $tones[$i % count($tones)]; ?>
-      <div class="tile-lum <?= $tone ?>">
+      <div class="tile-glass <?= $tone ?>">
         <span class="code"><?= htmlspecialchars($c['course_code']) ?></span>
         <div class="name"><?= htmlspecialchars($c['course_title']) ?></div>
         <div class="meta">
-          <span class="pill gray"><i class="bi bi-award-fill"></i> <?= htmlspecialchars($c['credits'] ?? '—') ?> credits</span>
-          <span class="pill gray"><i class="bi bi-person-video3"></i> <?= htmlspecialchars($c['lecturer_name'] ?? 'TBA') ?></span>
+          <span class="pill-glass gray"><i class="bi bi-award-fill"></i> <?= htmlspecialchars($c['credits'] ?? '—') ?> credits</span>
+          <span class="pill-glass gray"><i class="bi bi-person-video3"></i> <?= htmlspecialchars($c['lecturer_name'] ?? 'TBA') ?></span>
         </div>
       </div>
       <?php endforeach; ?>
