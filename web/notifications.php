@@ -54,64 +54,70 @@ if ($role === 'admin' || $role === 'lecturer') {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Notifications - ExamSys</title>
+  <title>Inbox · ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="container-modern">
-  <div class="page-header">
+<div class="container-lum">
+
+  <div class="page-head-lum">
     <div>
-      <h1>Notifications</h1>
-      <p class="subtitle">
+      <span class="eyebrow">◆ Inbox</span>
+      <h1>Noti<em>fications</em></h1>
+      <p class="sub">
         <?php
-          if ($role === 'student')       echo "Your notifications.";
+          if ($role === 'student')       echo "Your personal notifications.";
           elseif ($role === 'lecturer')  echo "Send notifications to your students.";
-          else                           echo "Send notifications to students and lecturers.";
+          else                           echo "Broadcast messages to students and lecturers.";
         ?>
       </p>
     </div>
+    <span class="pill indigo" style="padding:0.5rem 1rem;font-size:0.85rem;">
+      <i class="bi bi-bell-fill"></i> <?= count($notifications) ?> messages
+    </span>
   </div>
 
   <?php if (!empty($error)): ?>
-    <div class="alert-modern danger">
-      <i class="bi bi-exclamation-triangle-fill"></i>
-      <div><?= htmlspecialchars($error) ?></div>
-    </div>
+    <div class="alert-lum danger"><i class="bi bi-exclamation-octagon-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
   <?php endif; ?>
 
   <!-- ===== FORM SEND (Admin & Lecturer) ===== -->
   <?php if ($role === 'admin' || $role === 'lecturer'): ?>
-  <div class="card-modern mb-4">
-    <h4 style="margin-top:0;color:var(--dark);">
-      <i class="bi bi-send"></i> Send New Notification
-    </h4>
-    <form method="POST" id="notifForm" style="margin-top:1.25rem;">
+  <div class="card-lum flat mb-3">
+    <div class="form-section-head">
+      <div class="form-section-icon" style="background:var(--indigo-soft);color:var(--indigo);">
+        <i class="bi bi-send-fill"></i>
+      </div>
+      <div>
+        <h3 class="form-section-title">Compose Notification</h3>
+        <p class="form-section-desc">Send an announcement to students or a specific recipient.</p>
+      </div>
+    </div>
+
+    <form method="POST" id="notifForm">
       <input type="hidden" name="create_notification" value="1">
 
-      <div class="form-group">
-        <label class="form-label-modern">Recipient</label>
-        <select name="recipient_mode" id="recipientMode" class="form-select-modern" required>
-          <option value="">-- Select Recipient --</option>
+      <div class="field-lum">
+        <label><i class="bi bi-people-fill"></i> Recipient <span class="req">*</span></label>
+        <select name="recipient_mode" id="recipientMode" class="select-lum" required>
+          <option value="">— Select Recipient —</option>
           <option value="all">
-            📢 SEND TO ALL 
-            <?= $role === 'admin' ? '(All Users)' : '(My Students + Me)' ?>
+            📢 Send to All <?= $role === 'admin' ? '(All Users)' : '(My Students)' ?>
           </option>
           <option value="single">👤 Specific Student</option>
         </select>
       </div>
 
-      <div class="form-group" id="studentSection" style="display:none">
-        <label class="form-label-modern">Select Student</label>
-        <select name="user_id" id="studentSelect" class="form-select-modern">
-          <option value="">-- Select Student --</option>
+      <div class="field-lum" id="studentSection" style="display:none">
+        <label><i class="bi bi-person-fill"></i> Select Student</label>
+        <select name="user_id" id="studentSelect" class="select-lum">
+          <option value="">— Select Student —</option>
           <?php foreach ($students as $s): ?>
             <option value="<?= $s['user_id'] ?>">
-              <?= htmlspecialchars($s['full_name']) ?> 
-              (<?= htmlspecialchars($s['matric_no'] ?? 'N/A') ?>)
+              <?= htmlspecialchars($s['full_name']) ?> (<?= htmlspecialchars($s['matric_no'] ?? 'N/A') ?>)
             </option>
           <?php endforeach; ?>
         </select>
@@ -119,93 +125,80 @@ if ($role === 'admin' || $role === 'lecturer') {
 
       <input type="hidden" name="send_to_all" id="sendToAll" value="0">
 
-      <div class="form-group">
-        <label class="form-label-modern">Title</label>
-        <input type="text" name="title" class="form-control-modern" 
-               placeholder="e.g., Exam Schedule Released" required>
+      <div class="field-lum">
+        <label><i class="bi bi-type-fill"></i> Title <span class="req">*</span></label>
+        <input type="text" name="title" class="input-lum" placeholder="e.g. Exam Schedule Released" required>
       </div>
 
-      <div class="form-group">
-        <label class="form-label-modern">Message</label>
-        <textarea name="message" class="form-control-modern" rows="3" 
-                  placeholder="Write your notification here..." required></textarea>
+      <div class="field-lum">
+        <label><i class="bi bi-chat-left-text-fill"></i> Message <span class="req">*</span></label>
+        <textarea name="message" class="input-lum" rows="3" placeholder="Write your notification here..." required></textarea>
       </div>
 
-      <button type="submit" class="btn-modern primary">
-        <i class="bi bi-send"></i> Send Notification
-      </button>
+      <div class="form-actions">
+        <button type="submit" class="btn-lum primary"><i class="bi bi-send-fill"></i> Send Notification</button>
+      </div>
     </form>
   </div>
 
   <script>
     document.getElementById('recipientMode').addEventListener('change', function() {
-        var studentSection = document.getElementById('studentSection');
-        var studentSelect  = document.getElementById('studentSelect');
-        var sendToAll      = document.getElementById('sendToAll');
-
-        if (this.value === 'all') {
-            studentSection.style.display = 'none';
-            studentSelect.required = false;
-            sendToAll.value = '1';
-        } else if (this.value === 'single') {
-            studentSection.style.display = 'block';
-            studentSelect.required = true;
-            sendToAll.value = '0';
-        } else {
-            studentSection.style.display = 'none';
-            studentSelect.required = false;
-            sendToAll.value = '0';
-        }
+        var s = document.getElementById('studentSection');
+        var sel = document.getElementById('studentSelect');
+        var all = document.getElementById('sendToAll');
+        if (this.value === 'all') { s.style.display='none'; sel.required=false; all.value='1'; }
+        else if (this.value === 'single') { s.style.display='block'; sel.required=true; all.value='0'; }
+        else { s.style.display='none'; sel.required=false; all.value='0'; }
     });
   </script>
   <?php endif; ?>
 
   <!-- ===== SENARAI NOTIFICATIONS ===== -->
-  <h4 style="margin-top:2rem;">Notification List</h4>
+  <h3 style="font-size:1.4rem;margin:2rem 0 1rem;"><i class="bi bi-list-stars" style="color:var(--indigo)"></i> Recent messages</h3>
+
   <?php if (empty($notifications)): ?>
-    <div class="empty-state">
+    <div class="empty-lum">
       <div class="icon"><i class="bi bi-bell-slash"></i></div>
-      <h4>No Notifications</h4>
-      <p>There are no notifications at the moment.</p>
+      <h4>No notifications</h4>
+      <p>Nothing to display at the moment.</p>
     </div>
   <?php else: ?>
-    <div class="notif-list" style="margin-top:1rem;">
+    <div class="notif-lum">
       <?php foreach ($notifications as $n): ?>
-      <div class="notif-item <?= (!empty($n['is_read']) && $role === 'student') ? 'read' : '' ?>">
-        <div style="flex:1;">
-          <div class="notif-title"><?= htmlspecialchars($n['title']) ?></div>
-          <div class="notif-message"><?= htmlspecialchars($n['message']) ?></div>
-          <div class="notif-meta">
-            <i class="bi bi-clock"></i>
+        <?php $isRead = !empty($n['is_read']) && $role === 'student'; ?>
+        <div class="item <?= $isRead ? 'read' : '' ?>">
+          <div class="dot-ind"></div>
+          <div style="flex:1;">
+            <div class="ttl"><?= htmlspecialchars($n['title']) ?></div>
+            <div class="msg"><?= htmlspecialchars($n['message']) ?></div>
+            <div class="meta">
+              <i class="bi bi-clock"></i>
+              <?php if ($role === 'student'): ?>
+                <?= htmlspecialchars($n['created_at']) ?>
+              <?php else: ?>
+                Sent to <strong><?= htmlspecialchars($n['recipient_count']) ?></strong> recipient(s) · <?= htmlspecialchars($n['created_at']) ?>
+              <?php endif; ?>
+            </div>
+          </div>
+          <div style="flex-shrink:0;">
             <?php if ($role === 'student'): ?>
-              <?= htmlspecialchars($n['created_at']) ?>
+              <?php if ($n['is_read']): ?>
+                <span class="pill gray"><i class="bi bi-check2-all"></i> Read</span>
+              <?php else: ?>
+                <form method="POST" style="display:inline">
+                  <input type="hidden" name="mark_read_id" value="<?= $n['notification_id'] ?>">
+                  <button type="submit" class="btn-lum mint sm"><i class="bi bi-check2"></i> Mark Read</button>
+                </form>
+              <?php endif; ?>
             <?php else: ?>
-              Sent to <strong><?= htmlspecialchars($n['recipient_count']) ?></strong> recipient(s)
-              on <?= htmlspecialchars($n['created_at']) ?>
+              <span class="pill indigo"><i class="bi bi-send-check-fill"></i> <?= htmlspecialchars($n['recipient_count']) ?> sent</span>
             <?php endif; ?>
           </div>
         </div>
-        <div>
-          <?php if ($role === 'student'): ?>
-            <?php if ($n['is_read']): ?>
-              <span class="badge-modern gray">Read</span>
-            <?php else: ?>
-              <span class="badge-modern primary">Unread</span>
-              <form method="POST" style="display:inline">
-                <input type="hidden" name="mark_read_id" value="<?= $n['notification_id'] ?>">
-                <button type="submit" class="btn-modern success sm">
-                  <i class="bi bi-check"></i> Mark Read
-                </button>
-              </form>
-            <?php endif; ?>
-          <?php else: ?>
-            <span class="badge-modern info"><?= htmlspecialchars($n['recipient_count']) ?> sent</span>
-          <?php endif; ?>
-        </div>
-      </div>
       <?php endforeach; ?>
     </div>
   <?php endif; ?>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
