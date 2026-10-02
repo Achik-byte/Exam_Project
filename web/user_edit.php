@@ -12,7 +12,6 @@ $res  = apiRequest('/users/' . $id, 'GET', null, $_SESSION['token']);
 $user = $res['body']['data'] ?? null;
 if (!$user) { die("User not found."); }
 $error = "";
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $response = apiRequest('/users/' . $id, 'PUT', [
         'full_name' => $_POST['full_name'],
@@ -30,15 +29,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< Updated upstream
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit User · ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+=======
+  <title>Edit User - ExamSys</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+>>>>>>> Stashed changes
   <link href="assets/style.css" rel="stylesheet">
 </head>
 <body>
 <?php include 'navbar.php'; ?>
+<<<<<<< Updated upstream
 <div class="container-lum" style="max-width:880px;">
 
   <div style="display:flex;align-items:center;gap:0.5rem;color:var(--ink-3);font-size:0.85rem;margin-bottom:1.25rem;">
@@ -189,6 +196,63 @@ document.querySelectorAll('.role-card').forEach(card => {
     });
 });
 </script>
+=======
+<div class="container-modern">
+  <div class="page-header">
+    <div>
+      <h1>Edit User</h1>
+      <p class="subtitle">Update user information</p>
+    </div>
+    <a href="users.php" class="btn-modern outline"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+
+  <div class="card-modern" style="max-width: 720px;">
+    <?php if ($error): ?>
+      <div class="alert-modern danger"><i class="bi bi-exclamation-triangle-fill"></i><div><?= htmlspecialchars($error) ?></div></div>
+    <?php endif; ?>
+
+    <form method="POST">
+      <div class="form-group">
+        <label class="form-label-modern">Full Name</label>
+        <input type="text" name="full_name" class="form-control-modern" value="<?= htmlspecialchars($user['full_name']) ?>" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label-modern">Email</label>
+        <input type="email" name="email" class="form-control-modern" value="<?= htmlspecialchars($user['email']) ?>" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label-modern">Role</label>
+        <select name="role" class="form-select-modern" required>
+          <?php foreach (['admin','lecturer','student'] as $r): ?>
+            <option value="<?= $r ?>" <?= $user['role']==$r?'selected':'' ?>><?= ucfirst($r) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label-modern">Matric No</label>
+        <input type="text" name="matric_no" class="form-control-modern" value="<?= htmlspecialchars($user['matric_no'] ?? '') ?>">
+      </div>
+      <div class="form-group">
+        <label class="form-label-modern">IC No</label>
+        <input type="text" name="no_ic" class="form-control-modern" value="<?= htmlspecialchars($user['no_ic'] ?? '') ?>" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label-modern">Phone</label>
+        <input type="text" name="phone" class="form-control-modern" value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
+      </div>
+      <div class="form-group">
+        <label class="form-label-modern">
+          <input type="checkbox" name="is_active" <?= $user['is_active']?'checked':'' ?>> Active
+        </label>
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <button type="submit" class="btn-modern primary"><i class="bi bi-save"></i> Update</button>
+        <a href="users.php" class="btn-modern outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+>>>>>>> Stashed changes
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

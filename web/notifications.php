@@ -4,6 +4,11 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['token'])) { header("Locati
 require_once __DIR__ . '/config.php';
 $role = $_SESSION['role']; $error = "";
 
+<<<<<<< Updated upstream
+=======
+$role = $_SESSION['role'];
+
+>>>>>>> Stashed changes
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['mark_read_id'])) {
         apiRequest('/notifications/' . $_POST['mark_read_id'], 'PUT', ['is_read' => 1], $_SESSION['token']);
@@ -11,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     if (isset($_POST['create_notification'])) {
         $payload = ['title' => $_POST['title'], 'message' => $_POST['message']];
+<<<<<<< Updated upstream
         if (isset($_POST['send_to_all']) && $_POST['send_to_all'] == '1') $payload['to_all'] = 1;
         else $payload['user_id'] = $_POST['user_id'];
         $response = apiRequest('/notifications', 'POST', $payload, $_SESSION['token']);
@@ -20,6 +26,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 $response      = apiRequest('/notifications', 'GET', null, $_SESSION['token']);
 $notifications = ($response['status_code'] === 200) ? ($response['body']['data'] ?? []) : [];
+=======
+        if (isset($_POST['send_to_all']) && $_POST['send_to_all'] == '1') {
+            $payload['to_all'] = 1;
+        } else {
+            $payload['user_id'] = $_POST['user_id'];
+        }
+        $response = apiRequest('/notifications', 'POST', $payload, $_SESSION['token']);
+        if ($response['status_code'] === 201) {
+            header("Location: notifications.php"); exit;
+        } else {
+            $error = $response['body']['message'] ?? 'Failed to create notification';
+        }
+    }
+}
+
+$response      = apiRequest('/notifications', 'GET', null, $_SESSION['token']);
+$notifications = ($response['status_code'] === 200) ? ($response['body']['data'] ?? []) : [];
+
+>>>>>>> Stashed changes
 $students = [];
 if ($role === 'admin' || $role === 'lecturer') {
     $s = apiRequest('/students', 'GET', null, $_SESSION['token']);
@@ -30,6 +55,7 @@ if ($role === 'admin' || $role === 'lecturer') {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+<<<<<<< Updated upstream
   <title>Notifications · ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -155,3 +181,6 @@ if ($role === 'admin' || $role === 'lecturer') {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+=======
+  <title>Notifications - ExamSys</title>
+>>>>>>> Stashed changes

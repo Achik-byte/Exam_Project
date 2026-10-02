@@ -2,6 +2,18 @@
 define('API_BASE_URL', getenv('API_BASE_URL') ?: 'https://examproject-production-e573.up.railway.app');
 define('PUBLIC_BASE_URL', getenv('PUBLIC_BASE_URL') ?: 'https://examproject-production-e573.up.railway.app/web');
 
+// ==========================================
+// SAMBUNGAN KE LOCALHOST (untuk sync)
+// ==========================================
+$conn_local = new mysqli("localhost", "root", "", "exam_db");
+if ($conn_local->connect_error) {
+    // Jangan matikan sistem, cuma bagi amaran
+    error_log("Localhost DB gagal: " . $conn_local->connect_error);
+    $conn_local = null;
+} else {
+    $conn_local->set_charset("utf8mb4");
+}
+
 function apiRequest($endpoint, $method = 'GET', $data = null, $token = null) {
     $url = API_BASE_URL . $endpoint;
     $ch  = curl_init($url);
