@@ -30,60 +30,98 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Add Exam</title>
+  <meta charset="UTF-8">
+  <title>Add Exam - ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
 </head>
-<body class="container mt-4">
-<h3>Add New Exam</h3>
-<?php if ($error): ?><div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
-<form method="POST">
-  <div class="mb-3"><label>Course</label>
-    <select name="course_id" id="courseSelect" class="form-control" required>
-      <option value="">-- Select Course --</option>
-      <?php foreach ($courses as $c): ?>
-        <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_code'].' - '.$c['course_title']) ?></option>
-      <?php endforeach; ?>
-    </select>
-  </div>
-  <div class="mb-3"><label>Subject</label>
-    <select name="subject_id" id="subjectSelect" class="form-control" required>
-      <option value="">-- Select Course First --</option>
-    </select>
-  </div>
-  <div class="mb-3"><label>Date</label>
-    <input type="date" name="exam_date" class="form-control" required></div>
-  <div class="mb-3"><label>Start Time</label>
-    <input type="time" name="start_time" class="form-control" required></div>
-  <div class="mb-3"><label>End Time</label>
-    <input type="time" name="end_time" class="form-control" required></div>
-  <div class="mb-3"><label>Venue</label>
-    <input type="text" name="venue" class="form-control" required></div>
-  <div class="mb-3"><label>Status</label>
-    <select name="status" class="form-control" required>
-      <option value="scheduled">Scheduled</option>
-      <option value="completed">Completed</option>
-      <option value="cancelled">Cancelled</option>
-    </select>
-  </div>
-  <button type="submit" class="btn btn-primary">Save Exam</button>
-  <a href="exams.php" class="btn btn-secondary">Cancel</a>
-</form>
+<body>
+<?php include 'navbar.php'; ?>
+<div class="container-modern" style="max-width: 800px;">
 
+  <div class="page-header">
+    <div>
+      <h1>Add New Exam</h1>
+      <p class="subtitle">Fill in the details to schedule a new examination.</p>
+    </div>
+    <a href="exams.php" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+
+  <?php if ($error): ?>
+    <div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill"></i> <?= htmlspecialchars($error) ?></div>
+  <?php endif; ?>
+
+  <div class="card-modern">
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label"><i class="bi bi-book-fill"></i> Course</label>
+        <select name="course_id" id="courseSelect" class="form-select" required>
+          <option value="">-- Select Course --</option>
+          <?php foreach ($courses as $c): ?>
+            <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_code'].' - '.$c['course_title']) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label"><i class="bi bi-journal-text"></i> Subject</label>
+        <select name="subject_id" id="subjectSelect" class="form-select" required>
+          <option value="">-- Select Course First --</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label"><i class="bi bi-calendar3"></i> Exam Date</label>
+          <input type="date" name="exam_date" class="form-control" required>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label"><i class="bi bi-clock-fill"></i> Start Time</label>
+          <input type="time" name="start_time" class="form-control" required>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label"><i class="bi bi-clock-history"></i> End Time</label>
+          <input type="time" name="end_time" class="form-control" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label"><i class="bi bi-geo-alt-fill"></i> Venue</label>
+        <input type="text" name="venue" class="form-control" placeholder="e.g. Exam Hall A" required>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label"><i class="bi bi-info-circle-fill"></i> Status</label>
+        <select name="status" class="form-select" required>
+          <option value="scheduled">Scheduled</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save Exam</button>
+        <a href="exams.php" class="btn btn-secondary"><i class="bi bi-x-lg"></i> Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 const allSubjects = <?= json_encode($subjects) ?>;
-
 document.getElementById('courseSelect').addEventListener('change', function () {
     const courseId = this.value;
     const subjectSelect = document.getElementById('subjectSelect');
     subjectSelect.innerHTML = '<option value="">-- Select Subject --</option>';
-
     if (!courseId) {
         subjectSelect.innerHTML = '<option value="">-- Select Course First --</option>';
         return;
     }
-
     allSubjects
         .filter(s => String(s.course_id) === String(courseId))
         .forEach(s => {
