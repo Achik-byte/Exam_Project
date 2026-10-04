@@ -1,14 +1,21 @@
 <?php
 require_once __DIR__ . '/config.php';
+
 $id = $_GET['id'] ?? null;
-$student = null; $subjects = []; $error = "";
-if (!$id) $error = "No student ID provided.";
-else {
+$student = null;
+$subjects = [];
+$error = "";
+
+if (!$id) {
+    $error = "No student ID provided.";
+} else {
     $response = apiRequest('/verify/' . $id, 'GET');
     if ($response['status_code'] === 200) {
         $student  = $response['body']['data']['student'];
         $subjects = $response['body']['data']['subjects'];
-    } else $error = $response['body']['message'] ?? 'Verification failed';
+    } else {
+        $error = $response['body']['message'] ?? 'Verification failed';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -16,214 +23,213 @@ else {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verification · ExamSys</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Student Verification - ExamSys</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: #0f0f1e;
-      font-family: 'Inter', -apple-system, sans-serif;
-      color: white;
+    .verify-wrapper {
       min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      padding: 2rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
     }
-    .vf-card {
-      width: 100%; max-width: 640px;
-      background: linear-gradient(180deg, #1a1a2e 0%, #16162a 100%);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 24px;
+    .verify-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-radius: var(--radius-2xl);
+      max-width: 720px;
+      width: 100%;
+      box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255,255,255,0.08);
+      border: 1px solid var(--glass-border);
       overflow: hidden;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      animation: fadeInUp 0.7s cubic-bezier(0.4,0,0.2,1);
     }
-    /* HERO */
-    .vf-hero {
-      padding: 2.5rem 2rem 1.75rem;
+    .verify-header {
+      padding: 2.75rem 2rem;
       text-align: center;
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      color: white;
       position: relative;
       overflow: hidden;
     }
-    .vf-hero::before {
+    .verify-header.ok { background: var(--gradient-forest); }
+    .verify-header.err { background: var(--gradient-fire); }
+    .verify-header::before {
       content: '';
-      position: absolute; top: -50%; right: -20%;
+      position: absolute;
+      top: -50%; right: -20%;
       width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(255,255,255,0.2), transparent 65%);
+      background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%);
       border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
     }
-    .vf-hero.error { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); }
-    .vf-seal {
-      width: 80px; height: 80px;
+    .verify-header::after {
+      content: '';
+      position: absolute;
+      bottom: -50%; left: -20%;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
       border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      border: 3px solid rgba(255,255,255,0.5);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.2rem;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    .verify-icon {
+      width: 90px;
+      height: 90px;
+      background: rgba(255,255,255,0.22);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin: 0 auto 1rem;
-      position: relative; z-index: 1;
-      backdrop-filter: blur(10px);
+      font-size: 2.75rem;
+      border: 2px solid rgba(255,255,255,0.35);
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(12px);
     }
-    .vf-hero h1 {
-      font-size: 1.6rem;
+    .verify-header h2 {
+      margin: 0;
       font-weight: 800;
-      position: relative; z-index: 1;
-      margin-bottom: 0.25rem;
+      font-size: 1.9rem;
+      position: relative;
+      z-index: 1;
+      letter-spacing: -0.03em;
     }
-    .vf-hero p {
-      font-size: 0.85rem;
-      opacity: 0.85;
-      position: relative; z-index: 1;
+    .verify-header p {
+      margin: 0.5rem 0 0 0;
+      opacity: 0.95;
+      position: relative;
+      z-index: 1;
+      font-weight: 500;
     }
-    /* BODY */
-    .vf-body { padding: 2rem; }
-    .vf-student {
+    .verify-body { padding: 2.25rem; }
+    .student-info {
       text-align: center;
-      padding: 1.5rem;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
     }
-    .vf-student .name {
-      font-size: 1.4rem;
+    .student-avatar {
+      width: 72px;
+      height: 72px;
+      background: var(--gradient-primary);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
       font-weight: 800;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #a5b4fc, #f0abfc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: white;
+      margin: 0 auto 1rem;
+      box-shadow: var(--shadow-glow-primary);
     }
-    .vf-student .meta {
-      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+    .student-info h3 {
+      margin: 0.5rem 0 0.5rem 0;
+      font-weight: 800;
+      color: #ffffff;
+      font-size: 1.65rem;
+      letter-spacing: -0.02em;
+    }
+    .student-info .matric {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+    .student-info .matric strong { color: var(--primary-light); }
+    .verify-footer {
+      padding: 1.25rem 2.25rem;
+      background: rgba(0,0,0,0.25);
+      text-align: center;
       font-size: 0.82rem;
-      color: rgba(255,255,255,0.6);
-    }
-    .vf-student .meta strong { color: #a5b4fc; font-family: 'SF Mono', monospace; }
-    .vf-section {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: #a5b4fc;
-      font-weight: 700;
-      margin-bottom: 0.85rem;
-      display: flex; align-items: center; gap: 0.5rem;
-    }
-    .vf-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
-    .vf-item {
-      display: flex; align-items: center; gap: 1rem;
-      padding: 1rem 1.15rem;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      transition: all .25s;
-    }
-    .vf-item:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(99,102,241,0.4);
-      transform: translateX(4px);
-    }
-    .vf-item .num {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800;
-      font-size: 0.8rem;
-      flex-shrink: 0;
-    }
-    .vf-item .info { flex: 1; min-width: 0; }
-    .vf-item .subj { font-weight: 700; font-size: 0.92rem; margin-bottom: 0.15rem; }
-    .vf-item .code {
-      font-family: 'SF Mono', monospace;
-      font-size: 0.72rem;
-      color: #a5b4fc;
-    }
-    .vf-alert {
-      padding: 1rem 1.15rem;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      display: flex; align-items: flex-start; gap: 0.65rem;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #6ee7b7;
-      line-height: 1.5;
-    }
-    .vf-alert.danger {
-      background: rgba(239, 68, 68, 0.15);
-      border-color: rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-    }
-    .vf-foot {
-      padding: 1rem 2rem;
-      background: rgba(0,0,0,0.3);
-      border-top: 1px solid rgba(255,255,255,0.06);
-      text-align: center;
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.4);
-      font-family: 'SF Mono', monospace;
+      color: var(--gray);
+      border-top: 1px solid var(--border);
     }
   </style>
 </head>
 <body>
-<div class="vf-card">
+<div class="verify-wrapper">
+  <div class="verify-card">
 
-  <div class="vf-hero <?= $error ? 'error' : '' ?>">
-    <div class="vf-seal"><?= $error ? '✕' : '✓' ?></div>
-    <h1><?= $error ? 'Verification Failed' : 'Verified Student' ?></h1>
-    <p><?= $error ? htmlspecialchars($error) : 'Official examination registration confirmed' ?></p>
-  </div>
-
-  <?php if (!$error): ?>
-  <div class="vf-body">
-
-    <div class="vf-student">
-      <div class="name"><?= htmlspecialchars($student['full_name']) ?></div>
-      <div class="meta">
-        <span>Matric · <strong><?= htmlspecialchars($student['matric_no'] ?? '—') ?></strong></span>
-        <span>ID · <strong>#<?= htmlspecialchars($student['user_id']) ?></strong></span>
+    <?php if ($error): ?>
+      <div class="verify-header err">
+        <div class="verify-icon"><i class="bi bi-x-lg"></i></div>
+        <h2>Verification Failed</h2>
+        <p><?= htmlspecialchars($error) ?></p>
       </div>
-    </div>
-
-    <div class="vf-section">
-      <i class="bi bi-bookmark-star-fill"></i> Registered Subjects · <?= count($subjects) ?>
-    </div>
-
-    <?php if (empty($subjects)): ?>
-      <div class="vf-alert danger"><i class="bi bi-exclamation-triangle-fill"></i><div>No subjects registered.</div></div>
     <?php else: ?>
-      <div class="vf-list">
-        <?php foreach ($subjects as $i => $s): ?>
-          <div class="vf-item">
-            <div class="num"><?= str_pad($i+1, 2, '0', STR_PAD_LEFT) ?></div>
-            <div class="info">
-              <div class="subj"><?= htmlspecialchars($s['subject_name']) ?></div>
-              <div class="code"><?= htmlspecialchars($s['course_code']) ?> · <?= htmlspecialchars($s['course_title']) ?></div>
-            </div>
-          </div>
-        <?php endforeach; ?>
+      <div class="verify-header ok">
+        <div class="verify-icon"><i class="bi bi-check-lg"></i></div>
+        <h2>Student Verified</h2>
+        <p>Official examination registration confirmed</p>
       </div>
     <?php endif; ?>
 
-    <div class="vf-alert">
-      <i class="bi bi-patch-check-fill"></i>
-      <div><strong>Verified.</strong> This student is officially registered in <?= count($subjects) ?> subject(s) for the upcoming examination.</div>
-    </div>
+    <?php if (!$error && $student): ?>
+      <div class="verify-body">
+
+        <div class="student-info">
+          <div class="student-avatar">
+            <?= strtoupper(substr($student['full_name'], 0, 1)) ?>
+          </div>
+          <h3><?= htmlspecialchars($student['full_name']) ?></h3>
+          <p class="matric">
+            Matric No: <strong><?= htmlspecialchars($student['matric_no'] ?? '-') ?></strong>
+            &nbsp;·&nbsp;
+            User ID: <strong>#<?= htmlspecialchars($student['user_id']) ?></strong>
+          </p>
+        </div>
+
+        <h5 style="color:#ffffff;margin-bottom:1rem;font-weight:700;">
+          <i class="bi bi-book-fill" style="color:var(--primary-light);"></i>
+          Registered Subjects (<?= count($subjects) ?>)
+        </h5>
+
+        <?php if (empty($subjects)): ?>
+          <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle-fill"></i> No subjects registered.
+          </div>
+        <?php else: ?>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Subject</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($subjects as $s): ?>
+                <tr>
+                  <td>
+                    <strong><?= htmlspecialchars($s['course_code']) ?></strong><br>
+                    <small class="text-muted"><?= htmlspecialchars($s['course_title']) ?></small>
+                  </td>
+                  <td><?= htmlspecialchars($s['subject_name']) ?></td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        <?php endif; ?>
+
+        <div class="alert alert-success" style="margin-top:1.5rem;">
+          <i class="bi bi-check-circle-fill"></i>
+          <strong>Verified.</strong> This student is officially registered in <?= count($subjects) ?> subject(s).
+        </div>
+      </div>
+
+      <div class="verify-footer">
+        <i class="bi bi-shield-check" style="color:var(--primary-light);"></i>
+        ExamSys &copy; <?= date('Y') ?> — Verified at <?= date('Y-m-d H:i:s') ?>
+      </div>
+    <?php endif; ?>
 
   </div>
-  <?php else: ?>
-  <div class="vf-body">
-    <div class="vf-alert danger">
-      <i class="bi bi-exclamation-triangle-fill"></i>
-      <div><?= htmlspecialchars($error) ?></div>
-    </div>
-  </div>
-  <?php endif; ?>
-
-  <div class="vf-foot">
-    ExamSys · Verified at <?= date('Y-m-d H:i:s') ?>
-  </div>
-
 </div>
 </body>
 </html>
